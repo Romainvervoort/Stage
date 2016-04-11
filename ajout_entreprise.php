@@ -23,7 +23,7 @@ if (isset($_POST['nom'])) {
      $insert->bindValue(':mail',$nom,PDO::PARAM_STR);
      $insert->bindValue(':fax',$fax,PDO::PARAM_STR);
      $insert->bindValue(':num',$num,PDO::PARAM_STR);
-     $insert->bindValue(':cdp',$cdp,PDO::PARAM_int);
+     $insert->bindValue(':cdp',$cdp,PDO::PARAM_INT);
     $insert->execute();
 }
 else
