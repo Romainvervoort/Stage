@@ -74,12 +74,12 @@ License: You must have a valid license purchased only from themeforest(the above
                             <!-- Début du Formulaire-->
 
 
-                            <form action="#" class="form-horizontal form-bordered">
+                            <form action="add_employe.php" method="post" class="form-horizontal form-bordered">
                                 <div class="form-body">
                                     <div class="form-group">
                                         <label class="control-label col-md-3">Nom </label>
                                         <div class="col-md-4">
-                                            <input class="form-control" id="mask_date" type="text" />
+                                            <input class="form-control" id="nom" name="nom" type="text" />
                                         </div>
                                     </div>
 
@@ -87,7 +87,7 @@ License: You must have a valid license purchased only from themeforest(the above
                                     <div class="form-group">
                                         <label class="control-label col-md-3">Prénom</label>
                                         <div class="col-md-4">
-                                            <input class="form-control" id="mask_date1" type="text" />
+                                            <input class="form-control" id="prenom" name="prenom" type="text" />
                                         </div>
                                     </div>
 
@@ -95,7 +95,19 @@ License: You must have a valid license purchased only from themeforest(the above
                                     <div class="form-group">
                                         <label class="control-label col-md-3">Pseudo</label>
                                         <div class="col-md-4">
-                                            <input class="form-control" id="mask_date1" type="text" />
+                                            <input class="form-control" id="pseudo" name="pseudo" type="text" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label col-md-3">Numero de telephone</label>
+                                        <div class="col-md-4">
+                                            <input class="form-control" id="num" name="num" type="text" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label col-md-3">Adresse mail</label>
+                                        <div class="col-md-4">
+                                            <input class="form-control" id="mail" name="mail" type="text" />
                                         </div>
                                     </div>
 
@@ -103,7 +115,7 @@ License: You must have a valid license purchased only from themeforest(the above
                                     <div class="form-group">
                                         <label class="control-label col-md-3">Mot de passe</label>
                                         <div class="col-md-4">
-                                            <input class="form-control" id="mask_date1" type="password" />
+                                            <input class="form-control" id="mdp" name="mdp" type="password" />
                                         </div>
                                     </div>
 
@@ -111,7 +123,7 @@ License: You must have a valid license purchased only from themeforest(the above
                                     <div class="form-group">
                                         <label class="control-label col-md-3">Coût à l'heure</label>
                                         <div class="col-md-4">
-                                            <input class="form-control" id="mask_date1" type="text" />
+                                            <input class="form-control" id="cout" name="cout" type="text" />
                                         </div>
                                     </div>
 
@@ -119,10 +131,7 @@ License: You must have a valid license purchased only from themeforest(the above
                                     <div class="form-group">
                                         <label class="control-label col-md-3">Administrateur</label>
                                         <div class="col-md-4">
-                                            <form>
-
-                                                <INPUT type="checkbox" name="choix1" value="2">
-                                            </form>
+                                                <INPUT type="checkbox" name="administrateur" id="administrateur" value="administrateur">
                                         </div>
                                     </div>
 
@@ -130,10 +139,10 @@ License: You must have a valid license purchased only from themeforest(the above
                                     <div class="form-group">
                                         <label class="control-label col-md-3">Fixe intérim</label>
                                         <div class="col-md-4">
-                                            <form>
-                                                <INPUT type="checkbox" name="choix1" value="1">(Fixe)
-                                                <INPUT type="checkbox" name="choix1" value="3">(Intérim)
-                                            </form>
+
+                                                <INPUT type="checkbox" name="fixe" id="fixe" value="fixe">(Fixe)
+                                                <INPUT type="checkbox" name="interim" id="interim" value="interim">(Intérim)
+
                                         </div>
                                     </div>
 
@@ -141,11 +150,9 @@ License: You must have a valid license purchased only from themeforest(the above
                                     <div class="form-group">
                                         <label class="control-label col-md-3">Employé actif</label>
                                         <div class="col-md-4">
-                                            <form>
 
-                                                <INPUT type="checkbox" name="choix1" value="5">
-                                            </form>
 
+                                                <INPUT type="checkbox" name="actif" id ="actif" value="actif">
                                         </div>
                                     </div>
                                 </div>
@@ -163,6 +170,7 @@ License: You must have a valid license purchased only from themeforest(the above
 
                             </form>
                             <!-- FIn du formulaire-->
+
                         </div>
                     </div>
                 </div>
