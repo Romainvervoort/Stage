@@ -18,7 +18,7 @@ if (isset ($_POST['nom']))
     }
     if(isset($_POST['fixe']))
     {
-        $res_fixes = 1;
+        $res_fixe = 1;
         echo "fixe oui";
         ?>
         </br>
@@ -57,7 +57,7 @@ if (isset ($_POST['nom']))
     $num=$_POST['num'];
     $mail=$_POST['mail'];
     /* Fin de la vérification checbox */
-    $insert = $bdd-> prepare("Insert into utilisateur(Nom,Prenom,mail,telephone,mdp,administrateur,interim,fixe,cout_heure,actif)values(':nom,:prenom,:mail,;num,:mdp,:res_administrateur,:tes_interim,:tes_fixe,:cout,:res_actif')");
+    $insert = $bdd-> prepare("Insert into utilisateur(Nom,Prenom,mail,telephone,mdp,administrateur,interim,fixe,cout_heure,actif)values(:nom,:prenom,:mail,:num,:mdp,:res_administrateur,:res_interim,:res_fixe,:cout,:res_actif)");
     $insert ->bindValue(':nom',$nom,PDO::PARAM_STR);
     $insert ->bindValue(':prenom',$prenom,PDO::PARAM_STR);
     $insert->bindValue(':mail',$mail,PDO::PARAM_STR);
@@ -67,6 +67,9 @@ if (isset ($_POST['nom']))
     $insert-> bindValue(':res_interim',$res_interim,PDO::PARAM_INT);
     $insert-> bindValue(':res_fixe',$res_fixe,PDO::PARAM_INT);
     $insert->bindValue(':cout',$cout,PDO::PARAM_STR);
+    $insert->bindValue(':res_actif',$res_actif,PDO::PARAM_INT);
+    $insert->execute();
+
 }
 else
 {
