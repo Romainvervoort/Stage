@@ -15,7 +15,8 @@ License: You must have a valid license purchased only from themeforest(the above
 <!--[if IE 9]> <html lang="en" class="ie9 no-js"> <![endif]-->
 <!--[if !IE]><!-->
 <html lang="en">
-<?php include "head.html"?>
+<?php include "head.html";
+include "connexion.php"?>
 <body class="page-header-fixed page-sidebar-closed-hide-logo page-container-bg-solid">
 <!-- BEGIN HEADER -->
 <!-- La nav bar -->
@@ -70,18 +71,30 @@ License: You must have a valid license purchased only from themeforest(the above
                         </div>
                         <div class="portlet-body form">
                             <!-- BEGIN FORM-->
-                            <form action="#" class="form-horizontal form-bordered">
+                            <form action="add_project.php" method="post" class="form-horizontal form-bordered">
                                 <div class="form-body">
                                     <div class="form-group">
                                         <label class="control-label col-md-3">Nom du projet</label>
                                         <div class="col-md-4">
-                                            <input class="form-control" id="mask_date" type="text" />
+                                            <input class="form-control" id="nom" name="nom" type="text" />
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <label class="control-label col-md-3">Client</label>
                                         <div class="col-md-4">
-                                            <input class="form-control" id="mask_date1" type="text" />
+                                            <input type=text list=client name="client" >
+                                            <datalist id=client >
+                                                <?php
+                                                $rep = $bdd-> query("Select * from contact");
+                                                while($donnees=$rep->fetch())
+                                                {
+                                                ?>
+                                                <option>
+                                                    <?php echo $donnees['nom'];
+                                                    }
+                                                    $rep->closeCursor()
+                                                    ?>
+                                            </datalist>
 
                                         </div>
                                     </div>
@@ -90,7 +103,7 @@ License: You must have a valid license purchased only from themeforest(the above
                                         <div class="col-md-4">
                                             <form>
 
-                                                <INPUT type="checkbox" name="choix1" value="2">(Production active en cours? )
+                                                <INPUT type="checkbox" id="active" name="active" value="active">(Production active en cours? )
                                             </form>
 
                                         </div>
@@ -99,7 +112,7 @@ License: You must have a valid license purchased only from themeforest(the above
                                         <label class="control-label col-md-3">Production en Régis</label>
                                         <div class="col-md-4">
                                             <form>
-                                                <INPUT type="checkbox" name="choix1" value="1">(Facturation à chaque fois qu'il y a une demande ?)
+                                                <INPUT type="checkbox" id="regis" name="regis" value="regis">(Facturation à chaque fois qu'il y a une demande ?)
                                             </form>
 
                                         </div>
@@ -107,13 +120,25 @@ License: You must have a valid license purchased only from themeforest(the above
                                     <div class="form-group">
                                         <label class="control-label col-md-3">Responsable du projet</label>
                                         <div class="col-md-4">
-                                            <input class="form-control" id="mask_date2" type="text" />
+                                            <input type=text list=responsable name="responsable" >
+                                            <datalist id=responsable >
+                                                <?php
+                                                $rep = $bdd-> query("Select * from utilisateur");
+                                                while($donnees=$rep->fetch())
+                                                {
+                                                ?>
+                                                <option>
+                                                    <?php echo $donnees['pseudo'];
+                                                    }
+                                                    $rep->closeCursor()
+                                                    ?>
+                                            </datalist>
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <label class="control-label col-md-3">Coût en heure</label>
                                         <div class="col-md-4">
-                                            <input class="form-control" id="mask_date2" type="text" />
+                                            <input class="form-control" id="cout" name="cout" type="text" />
                                         </div>
                                     </div>
 
@@ -125,7 +150,7 @@ License: You must have a valid license purchased only from themeforest(the above
                                         <div class="col-md-offset-3 col-md-9">
                                             <button type="submit" class="btn blue">
                                                 <i class="fa fa-check"></i> Enregistrer</button>
-                                            <button type="button" class="btn default">Annuler</button>
+                                           <a href="Administration_projet.php"> <button type="button" class="btn default">Annuler</button></a>
                                         </div>
                                     </div>
                                 </div>
