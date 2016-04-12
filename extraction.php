@@ -15,7 +15,8 @@ License: You must have a valid license purchased only from themeforest(the above
 <!--[if IE 9]> <html lang="en" class="ie9 no-js"> <![endif]-->
 <!--[if !IE]><!-->
 <html lang="en">
-<?php include "head.html"?>
+<?php include "head.html";
+include "connexion.php"?>
 <body class="page-header-fixed page-sidebar-closed-hide-logo page-container-bg-solid">
 <!-- BEGIN HEADER -->
 <!-- La nav bar -->
@@ -68,36 +69,79 @@ License: You must have a valid license purchased only from themeforest(the above
                         </div>
                         <div class="portlet-body form">
                             <!-- BEGIN FORM-->
-                            <form action="#" class="form-horizontal form-bordered">
+                            <form action="Extraction_liste.php" method="post" class="form-horizontal form-bordered">
                                 <div class="form-body">
                                     <div class="form-group">
-                                        <label class="control-label col-md-3">Employé </label>
+                                        <label class="control-label col-md-3">Responsable du projet</label>
                                         <div class="col-md-4">
-                                            <input class="form-control" id="mask_date" type="text" />
+                                                <?php
+                                                $rep = $bdd-> query("Select * from utilisateur where actif='true'");
+                                                while($donnees=$rep->fetch())
+                                                {
+
+                                               $pseudo = $donnees['pseudo'];?>
+                                                    <INPUT type="checkbox" id="<?php echo $pseudo ?>" name="<?php echo  $pseudo ?>" value="<?php echo  $pseudo ?>"><?php echo $pseudo ?>
+
+                                            <?php
+                                                    }
+                                                    $rep->closeCursor()
+                                                    ?>
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <label class="control-label col-md-3">Date de départ : mois</label>
                                         <div class="col-md-4">
-                                            <input class="form-control" id="mask_date1" type="text" />
+                                            <input class="form-control" id="date_dep" name="date_dep" type="date" />
 
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <label class="control-label col-md-3">Date de fin : mois</label>
                                         <div class="col-md-4">
-                                            <input class="form-control" id="mask_date1" type="text" />
+                                            <input class="form-control" id="date_fin" name="date_fin" type="date" />
 
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label class="control-label col-md-3">Dossier ou mot clé</label>
+                                        <label class="control-label col-md-3">Nom de l'entreprise</label>
                                         <div class="col-md-4">
-                                            <input class="form-control" id="mask_date1" type="text" />
+                                            <input type=text list=Client name="Client" >
+                                            <datalist name="Client"id=Client >
+                                                <?php
+                                                $rep2 = $bdd-> query("Select * from entreprise");
+                                                while($donnees=$rep2->fetch())
+                                                {
+                                                ?>
+                                                <option value="<?php echo $donnees['nom'];?>">
+                                                   </option>
 
+                                                <?php
+                                                    }
+                                                    $rep2->closeCursor();
+                                                    ?>
+                                            </datalist>
                                         </div>
                                     </div>
-                                </div>
+                                    <div class="form-group">
+                                        <label class="control-label col-md-3">Nom du projet</label>
+                                        <div class="col-md-4">
+                                            <input type=text list=Projets name="Projets" >
+                                            <datalist name="projet" id=Projets >
+                                                <?php
+                                                $rep = $bdd-> query("Select * from projet");
+                                                while($donnees=$rep->fetch())
+                                                {
+                                                ?>
+                                                <option value ="<?php echo $donnees['nom']; ?>"
+                                                    ></option>
+
+                                                <?php
+                                                    }
+                                                    $rep->closeCursor();
+                                                    ?>
+                                            </datalist>
+                                        </div>
+                                    </div>
                                 <div class="form-actions">
                                     <div class="row">
                                         <div class="col-md-offset-3 col-md-9">
