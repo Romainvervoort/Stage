@@ -77,6 +77,7 @@ session_start(); ?>
                                     <tr>
                                     <th> Utilisateur </th>
                                     <th> Nom projet </th>
+                                    <th> Nom client</th>
                                     <th> Tâche </th>
                                     <th> date </th>
                                     <th> Heure passé </th>
@@ -108,6 +109,7 @@ session_start(); ?>
                                                     while ($don = $req2->fetch()) {
                                                         $id_projets = $don['id_Projets'];
                                                         $id_tache = $don['id_tache'];
+                                                        $id_Entreprise= $don['id_Entreprise'];
                                                         ?>
                                                         <td><?php echo $pseudo ?> </td>
                                                         <td><?php
@@ -119,6 +121,15 @@ session_start(); ?>
                                                             }
                                                             $req3->closeCursor();
                                                             ?></td>
+                                                            <td> <?php
+                                                                $req3 = $bdd->prepare("Select * from entreprise where id_Entreprise=:id_Entreprise");
+                                                                $req3->bindValue(':id_Entreprise',$id_Entreprise,PDO::PARAM_INT);
+                                                                $req3->execute();
+                                                                while($donentreprise= $req3->fetch())
+                                                                {
+                                                                    echo $donentreprise['nom'];
+                                                                }
+                                                                ?></td>
                                                         <td><?php
                                                             $req3 = $bdd->prepare("Select * from taches where id_tache=:id_tache");
                                                             $req3->bindValue(':id_tache', $id_tache, PDO::PARAM_INT);
@@ -158,9 +169,19 @@ session_start(); ?>
                                                             $id_tache = $donprojets['id_tache'];
                                                             $date= $donprojets['date'];
                                                             $temps= $donprojets['temps'];
+                                                            $id_Entreprise = $donprojets['id_Entreprise'];
                                                             ?>
                                                             <td><?php echo $pseudo ?></td>
                                                             <td><?php echo $Projets?></td>
+                                                            <td> <?php
+                                                                $req3 = $bdd->prepare("Select * from entreprise where id_Entreprise=:id_Entreprise");
+                                                                $req3->bindValue(':id_Entreprise',$id_Entreprise,PDO::PARAM_INT);
+                                                                $req3->execute();
+                                                                while($donentreprise= $req3->fetch())
+                                                                {
+                                                                    echo $donentreprise['nom'];
+                                                                }
+                                                                ?></td>
                                                             <td> <?php $req3 = $bdd->prepare("Select * from taches where id_tache=:id_tache");
                                                                 $req3->bindValue(':id_tache', $id_tache, PDO::PARAM_INT);
                                                                 $req3->execute();
@@ -193,10 +214,8 @@ session_start(); ?>
                                                         }
                                                         $projet1->closeCursor();
                                                         $projets2 = $bdd-> prepare("Select * from ventillation where id_Projets=:id_projets and id_Users=:id_Users AND date BETWEEN '$date_dep' and '$today' ");
-                                                       $projets2 -> bindValue(':id_projets',$id_projets,PDO::PARAM_INT);
+                                                        $projets2 -> bindValue(':id_projets',$id_projets,PDO::PARAM_INT);
                                                         $projets2->bindValue(':id_Users',$id_Users,PDO::PARAM_INT);
-                                                      //  $projets2->bindValue(':date_dep',$date_dep,PDO::PARAM_STR);
-                                                       // $projets2->bindValue(':today',$today,PDO::PARAM_STR);
                                                         $projets2->execute();
 
                                                         while($donprojet2=$projets2->fetch())
@@ -205,10 +224,20 @@ session_start(); ?>
                                                             $id_tache = $donprojet2['id_tache'];
                                                              $date= $donprojet2['date'];
                                                             $temps= $donprojet2['temps'];
+                                                            $id_Entreprise = $donprojet2['id_Entreprise'];
 
                                                             ?>
                                                             <td><?php echo $pseudo ?></td>
                                                             <td><?php echo $Projets?></td>
+                                                            <td> <?php
+                                                                $req3 = $bdd->prepare("Select * from entreprise where id_Entreprise=:id_Entreprise");
+                                                                $req3->bindValue(':id_Entreprise',$id_Entreprise,PDO::PARAM_INT);
+                                                                $req3->execute();
+                                                                while($donentreprise= $req3->fetch())
+                                                                {
+                                                                    echo $donentreprise['nom'];
+                                                                }
+                                                                ?></td>
                                                             <td> <?php $req3 = $bdd->prepare("Select * from taches where id_tache=:id_tache");
                                                                 $req3->bindValue(':id_tache', $id_tache, PDO::PARAM_INT);
                                                                 $req3->execute();
@@ -250,8 +279,18 @@ session_start(); ?>
                                                             $id_tache = $donclient2['id_tache'];
                                                              $date= $donclient2['date'];
                                                             $temps= $donclient2['temps'];
+                                                            $id_projets = $donclient2['id_Projets']
                                                             ?>
                                                             <td><?php echo $pseudo ?></td>
+                                                            <td> <?php
+                                                                $req3 = $bdd->prepare("Select * from projet where id_Projets=:id_projets");
+                                                                $req3->bindValue(':id_projets',$id_projets,PDO::PARAM_INT);
+                                                                $req3->execute();
+                                                                while($donentreprise= $req3->fetch())
+                                                                {
+                                                                    echo $donentreprise['nom'];
+                                                                }
+                                                                ?></td>
                                                             <td><?php echo $Client?></td>
                                                             <td> <?php $req3 = $bdd->prepare("Select * from taches where id_tache=:id_tache");
                                                                 $req3->bindValue(':id_tache', $id_tache, PDO::PARAM_INT);
@@ -291,8 +330,18 @@ session_start(); ?>
                                                                     $id_tache = $donclient2['id_tache'];
                                                                      $date= $donclient2['date'];
                                                                     $temps= $donclient2['temps'];
+                                                                    $id_projets = $donclient2['id_Projets'];
                                                                     ?>
                                                                     <td><?php echo $pseudo ?></td>
+                                                                     <td> <?php
+                                                                    $req3 = $bdd->prepare("Select * from projet where id_Projets=:id_projets");
+                                                                    $req3->bindValue(':id_projets',$id_projets,PDO::PARAM_INT);
+                                                                    $req3->execute();
+                                                                    while($donentreprise= $req3->fetch())
+                                                                    {
+                                                                        echo $donentreprise['nom'];
+                                                                    }
+                                                                    ?></td>
                                                                     <td><?php echo $Client?></td>
                                                                     <td> <?php $req3 = $bdd->prepare("Select * from taches where id_tache=:id_tache");
                                                                         $req3->bindValue(':id_tache', $id_tache, PDO::PARAM_INT);
@@ -314,11 +363,52 @@ session_start(); ?>
                                                                     /* Utilisateur + date*/
                                                                     if(empty($_POST['Client'])==1 && empty($_POST['date_dep'])!=1&& empty($_POST['Projets'])==1)
                                                                     {
-                                                                    echo "ici";
+                                                                    $req2 = $bdd->prepare("Select * from ventillation where id_Users=:id_Users AND date BETWEEN '$date_dep' and '$today' ");
+                                                                    $req2->bindValue(':id_Users', $id_Users, PDO::PARAM_INT);
+                                                                    $req2->execute();
+                                                                    while ($don = $req2->fetch()) {
+                                                                        $id_projets = $don['id_Projets'];
+                                                                        $id_tache = $don['id_tache'];
+                                                                        $id_Entreprise = $don['id_Entreprise'];
+                                                                        ?>
+                                                                        <td><?php echo $pseudo ?> </td>
+                                                                        <td><?php
+                                                                            $req3 = $bdd->prepare("Select * from projet where id_Projets=:id_projets");
+                                                                            $req3->bindValue(':id_projets', $id_projets, PDO::PARAM_INT);
+                                                                            $req3->execute();
+                                                                            while ($donprojet = $req3->fetch()) {
+                                                                                echo $donprojet['nom'];
+                                                                            }
+                                                                            $req3->closeCursor();
+                                                                            ?></td>
+                                                                            <td> <?php
+                                                                            $req3 = $bdd->prepare("Select * from entreprise where id_Entreprise=:id_Entreprise");
+                                                                            $req3->bindValue(':id_Entreprise',$id_Entreprise,PDO::PARAM_INT);
+                                                                            $req3->execute();
+                                                                            while($donentreprise= $req3->fetch())
+                                                                            {
+                                                                                echo $donentreprise['nom'];
+                                                                            }
+                                                                            ?></td>
+                                                                        <td><?php
+                                                                            $req3 = $bdd->prepare("Select * from taches where id_tache=:id_tache");
+                                                                            $req3->bindValue(':id_tache', $id_tache, PDO::PARAM_INT);
+                                                                            $req3->execute();
+                                                                            while ($dontache = $req3->fetch()) {
+                                                                                echo $dontache['nom'];
+                                                                            }
+                                                                            $req3->closeCursor();
+                                                                            ?></td>
+                                                                        <td> <?php echo $don['date']; ?></td>
+                                                                        <td> <?php echo $don['temps'] ?></td>
+                                                                        </tr>
+                                                                        <?php
+
+                                                                    }
                                                                     }
                                                                     else
                                                                     {
-echo "Je suis là";
+
 
                                                                     }
 
