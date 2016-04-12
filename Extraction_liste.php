@@ -15,7 +15,9 @@ License: You must have a valid license purchased only from themeforest(the above
 <!--[if IE 9]> <html lang="en" class="ie9 no-js"> <![endif]-->
 <!--[if !IE]><!-->
 <html lang="en">
-<?php include "head.html"?>
+<?php include "head.html";
+include "connexion.php";
+session_start(); ?>
 <body class="page-header-fixed page-sidebar-closed-hide-logo page-container-bg-solid">
 <!-- BEGIN HEADER -->
 <!-- La nav bar -->
@@ -82,54 +84,371 @@ License: You must have a valid license purchased only from themeforest(the above
                                 </thead>
                                 <tbody>
                                 <tr class="odd gradeX">
-                                    <td> shuxer </td>
-                                    <td>
-                                        <a href="mailto:shuxer@gmail.com"> shuxer@gmail.com </a>
-                                    </td>
-                                    <td>
-                                        <span class="label label-sm label-success"> Approved </span>
-                                    </td>
-                                    <td class="center"> 12 Jan 2012 </td>
-                                    <td>
-                                        <div class="btn-group">
-                                            <button class="btn btn-xs green dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false"> Actions
-                                                <i class="fa fa-angle-down"></i>
-                                            </button>
-                                            <ul class="dropdown-menu" role="menu">
-                                                <li>
-                                                    <a href="javascript:;">
-                                                        <i class="icon-docs"></i> New Post </a>
-                                                </li>
-                                                <li>
-                                                    <a href="javascript:;">
-                                                        <i class="icon-tag"></i> New Comment </a>
-                                                </li>
-                                                <li>
-                                                    <a href="javascript:;">
-                                                        <i class="icon-user"></i> New User </a>
-                                                </li>
-                                                <li class="divider"> </li>
-                                                <li>
-                                                    <a href="javascript:;">
-                                                        <i class="icon-flag"></i> Comments
-                                                        <span class="badge badge-success">4</span>
-                                                    </a>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </td>
-                                </tr>
+                                    <!-- Récupération des informations -->
+                                    <?php
+                                    if(isset ($_POST['date_dep'])) {
+                                        /* Récupération des check boxe checked */
+                                        $Projets = $_POST['Projets'];
+                                        $date_dep = $_POST['date_dep'];
+                                        $date_fin = $_POST['date_fin'];
+                                        /*       $Clients = $_POST['Clients'];*/
+                                        $req = $bdd->query("Select * from utilisateur where actif='true'");
+                                        while ($donnees = $req->fetch()) {
+                                            $pseudo = $donnees['pseudo'];
 
+                                            if (isset($_POST['' . $pseudo])) {
+                                                $id_Users = $donnees['id_Users'];
+                                                if (empty($_POST['Client']) == 1 && empty($_POST['Projets'])==1 && empty($_POST['date_dep'])==1)
+                                                {
+                                                    /* Récupération de la ventillation  pour l'utilisateur X */
+                                                    $req2 = $bdd->prepare("Select * from ventillation where id_Users=:id_Users ORDER BY id_Projets");
+                                                    $req2->bindValue(':id_Users', $id_Users, PDO::PARAM_INT);
+                                                    $req2->execute();
+                                                    while ($don = $req2->fetch()) {
+                                                        $id_projets = $don['id_Projets'];
+                                                        $id_tache = $don['id_tache'];
+                                                        ?>
+                                                        <td><?php echo $pseudo ?> </td>
+                                                        <td><?php
+                                                            $req3 = $bdd->prepare("Select * from projet where id_Projets=:id_projets");
+                                                            $req3->bindValue(':id_projets', $id_projets, PDO::PARAM_INT);
+                                                            $req3->execute();
+                                                            while ($donprojet = $req3->fetch()) {
+                                                                echo $donprojet['nom'];
+                                                            }
+                                                            $req3->closeCursor();
+                                                            ?></td>
+                                                        <td><?php
+                                                            $req3 = $bdd->prepare("Select * from taches where id_tache=:id_tache");
+                                                            $req3->bindValue(':id_tache', $id_tache, PDO::PARAM_INT);
+                                                            $req3->execute();
+                                                            while ($dontache = $req3->fetch()) {
+                                                                echo $dontache['nom'];
+                                                            }
+                                                            $req3->closeCursor();
+                                                            ?></td>
+                                                        <td> <?php echo $don['date']; ?></td>
+                                                        <td> <?php echo $don['temps'] ?></td>
+                                                        </tr>
+                                                        <?php
+
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    /*Utilisateur + projet*/
+                                                    if(isset($_POST['Projets']) && empty($_POST['date_dep'])==1)
+                                                    {
+                                                        $projet1 = $bdd-> prepare("Select * from projet where nom=:Projets");
+                                                        $projet1 ->bindValue(':Projets',$Projets,PDO::PARAM_STR);
+                                                        $projet1 -> execute();
+                                                        while($donprojet1=$projet1->fetch())
+                                                        {
+                                                            $id_projets= $donprojet1['id_Projets'];
+                                                        }
+                                                        $projet1->closeCursor();
+                                                        $projets2 = $bdd-> prepare("Select * from ventillation where id_Projets=:id_projets and id_Users=:id_Users");
+                                                        $projets2 -> bindValue(':id_projets',$id_projets,PDO::PARAM_INT);
+                                                        $projets2->bindValue(':id_Users',$id_Users,PDO::PARAM_INT);
+                                                        $projets2->execute();
+                                                        while($donprojets=$projets2->fetch())
+                                                        {
+                                                            $id_tache = $donprojets['id_tache'];
+                                                            $date= $donprojets['date'];
+                                                            $temps= $donprojets['temps'];
+                                                            ?>
+                                                            <td><?php echo $pseudo ?></td>
+                                                            <td><?php echo $Projets?></td>
+                                                            <td> <?php $req3 = $bdd->prepare("Select * from taches where id_tache=:id_tache");
+                                                                $req3->bindValue(':id_tache', $id_tache, PDO::PARAM_INT);
+                                                                $req3->execute();
+                                                                while ($donprojets = $req3->fetch()) {
+                                                                    echo $donprojets['nom'];
+                                                                }
+                                                                $req3->closeCursor();
+                                                                ?>
+                                                                </td>
+                                                            <td> <?php echo $date;?></td>
+                                                            <td> <?php echo $temps;?></td>
+                                                            </tr>
+                                                            <?php
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        /* Utilisateur + projet +date*/
+                                                        if(isset($_POST['Projets']) && empty($_POST['date_dep'])!=1)
+                                                        {
+                                                        $today = date("Y-m-d");
+                                                        $projet1 = $bdd-> prepare("Select * from projet where nom=:Projets");
+                                                        $projet1 ->bindValue(':Projets',$Projets,PDO::PARAM_STR);
+                                                        $projet1 -> execute();
+                                                        while($donprojet1=$projet1->fetch())
+                                                        {
+                                                            $id_projets= $donprojet1['id_Projets'];
+                                                        }
+                                                        $projet1->closeCursor();
+                                                        $projets2 = $bdd-> prepare("Select * from ventillation where id_Projets=:id_projets and id_Users=:id_Users and date BETWEEN :date_dep and :today");
+                                                        $projets2 -> bindValue(':id_projets',$id_projets,PDO::PARAM_INT);
+                                                        $projets2->bindValue(':id_Users',$id_Users,PDO::PARAM_INT);
+                                                        $projets2->bindValue(':date_dep',$date_dep,PDO::PARAM_STR);
+                                                        $projets2->bindValue(':today',$today,PDO::PARAM_STR);
+                                                        $projets2->execute();
+                                                        while($donprojet2=$projets2->fetch())
+                                                        {
+
+                                                            $id_tache = $donprojet2['id_tache'];
+                                                             $date= $donprojet2['date'];
+                                                            $temps= $donprojet2['temps'];
+                                                            ?>
+                                                            <td><?php echo $pseudo ?></td>
+                                                            <td><?php echo $Projets?></td>
+                                                            <td> <?php $req3 = $bdd->prepare("Select * from taches where id_tache=:id_tache");
+                                                                $req3->bindValue(':id_tache', $id_tache, PDO::PARAM_INT);
+                                                                $req3->execute();
+                                                                while ($donprojet2 = $req3->fetch()) {
+                                                                    echo $donprojet2['nom'];
+                                                                }
+                                                                $req3->closeCursor();
+                                                                ?></td>
+                                                            <td> <?php echo $date?></td>
+                                                            <td> <?php echo $temps?></td>
+                                                            </tr>
+
+                                                            <?php
+                                                        }
+
+                                                        }
+                                                        else
+                                                        {
+                                                            /*Utilisateur + client*/
+                                                            if(empty($_POST['Clients'])!=1 && empty($_POST['date_dep'])==1)
+                                                            {
+
+                                                            }
+                                                            else
+                                                            {
+                                                                /* Utilisateur + client + date */
+                                                                if(empty($_POST['Clients'])!=1 && empty($_POST['date_dep'])!=1){
+
+                                                                }
+                                                                else
+                                                                {
+                                                                    /* Utilisateur + date*/
+                                                                    if(empty($_POST['Clients'])==1 && empty($_POST['date_dep'])!=1&& empty($_POST['Projets'])==1)
+                                                                    {
+
+                                                                    }
+                                                                    else
+                                                                    {
+
+
+                                                                    }
+
+                                                                }
+
+
+                                                            }
+                                                        }
+                                                    }
+
+                                                }
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        echo "Information manquante";
+                                    }
+
+                                    ?>
                                 </tbody>
+                        </div>
+
+
+
+                        </tbody>
                             </table>
                         </div>
                     </div>
                     <!-- END EXAMPLE TABLE PORTLET-->
                 </div>
             </div>
+            <div class="row">
+                <?php
+                if(isset ($_POST['date_dep'])) {
+                    /* Récupération des check boxe checked */
+                    $Projets = $_POST['Projets'];
+                    $date_dep = $_POST['date_dep'];
+                    $date_fin = $_POST['date_fin'];
+             /*       $Clients = $_POST['Clients'];*/
+                    $req = $bdd->query("Select * from utilisateur where actif='true'");
+                    while ($donnees = $req->fetch()) {
+                        $pseudo = $donnees['pseudo'];
+
+                        if (isset($_POST['' . $pseudo])) {
+                            $id_Users = $donnees['id_Users'];
+                            if (empty($_POST['Client']) == 1 && empty($_POST['Projets'])==1 && empty($_POST['date_dep'])==1)
+                            {
+                                /* Récupération de la ventillation  pour l'utilisateur X */
+                                $req2 = $bdd->prepare("Select * from ventillation where id_Users=:id_Users ORDER BY id_Projets");
+                                $req2->bindValue(':id_Users', $id_Users, PDO::PARAM_INT);
+                                $req2->execute();
+                                while ($don = $req2->fetch()) {
+                                    $id_projets = $don['id_Projets'];
+                                    $id_tache = $don['id_tache'];
+                                    ?>
+                                    <td><?php echo $pseudo ?> </td>
+                                    <td><?php
+                                        $req3 = $bdd->prepare("Select * from projet where id_Projets=:id_projets");
+                                        $req3->bindValue(':id_projets', $id_projets, PDO::PARAM_INT);
+                                        $req3->execute();
+                                        while ($donprojet = $req3->fetch()) {
+                                            echo $donprojet['nom'];
+                                        }
+                                        $req3->closeCursor();
+                                        ?></td>
+                                    <td><?php
+                                        $req3 = $bdd->prepare("Select * from taches where id_tache=:id_tache");
+                                        $req3->bindValue(':id_tache', $id_tache, PDO::PARAM_INT);
+                                        $req3->execute();
+                                        while ($dontache = $req3->fetch()) {
+                                            echo $dontache['nom'];
+                                        }
+                                        $req3->closeCursor();
+                                        ?></td>
+                                    <td> <?php echo $don['date']; ?></td>
+                                    <td> <?php echo $don['temps'] ?></td>
+                                    <?php
+
+                                }
+                            }
+                            else
+                            {
+                                /*Utilisateur + projet*/
+                                if(isset($_POST['Projets']) && empty($_POST['date_dep'])==1)
+                                {
+                                    $projet1 = $bdd-> prepare("Select * from projet where nom=:Projets");
+                                    $projet1 ->bindValue(':Projets',$Projets,PDO::PARAM_STR);
+                                    $projet1 -> execute();
+                                    while($donprojet1=$projet1->fetch())
+                                    {
+                                        $id_projets= $donprojet1['id_Projets'];
+                                    }
+                                    $projet1->closeCursor();
+                                    $projets2 = $bdd-> prepare("Select * from ventillation where id_Projets=:id_projets and id_Users=:id_Users");
+                                    $projets2 -> bindValue(':id_projets',$id_projets,PDO::PARAM_INT);
+                                    $projets2->bindValue(':id_Users',$id_Users,PDO::PARAM_INT);
+                                    $projets2->execute();
+                                    while($donprojet2=$projets2->fetch())
+                                    {
+                                        $id_tache = $donprojet2['id_tache'];
+                                        ?>
+                                        <td><?php echo $pseudo ?></td>
+                                        <td><?php echo $Projets?></td>
+                                        <td> <?php $req3 = $bdd->prepare("Select * from taches where id_tache=:id_tache");
+                                            $req3->bindValue(':id_tache', $id_tache, PDO::PARAM_INT);
+                                            $req3->execute();
+                                            while ($donprojet2 = $req3->fetch()) {
+                                                echo $donprojet2['nom'];
+                                            }
+                                            $req3->closeCursor();
+                                            ?></td>
+                                        <td> <?php echo $donprojet2['date']?></td>
+                                        <td> <?php echo $donprojet2['temps']?></td>
+
+                <?php
+                                    }
+                                }
+                                else
+                                {
+                                    /* Utilisateur + projet +date*/
+                                    if(empty($_POST['Projets'])!=1 && empty($_POST['date_dep'])!=1)
+                                    {
+                                        $today = date("Y-m-d");
+                                        $projet1 = $bdd-> prepare("Select * from projet where nom=:Projets");
+                                        $projet1 ->bindValue(':Projets',$Projets,PDO::PARAM_STR);
+                                        $projet1 -> execute();
+                                        while($donprojet1=$projet1->fetch())
+                                        {
+                                            $id_projets= $donprojet1['id_Projets'];
+                                        }
+                                        $projet1->closeCursor();
+                                        $projets2 = $bdd-> prepare("Select * from ventillation where id_Projets=:id_projets and id_Users=:id_Users and date BETWEEN :date_dep and :today");
+                                        $projets2 -> bindValue(':id_projets',$id_projets,PDO::PARAM_INT);
+                                        $projets2->bindValue(':id_Users',$id_Users,PDO::PARAM_INT);
+                                        $projets2->bindValue(':date_dep',$date_dep,PDO::PARAM_STR);
+                                        $projets2->bindValue(':today',$today,PDO::PARAM_STR);
+                                        $projets2->execute();
+                                        while($donprojet2=$projets2->fetch())
+                                        {
+                                            $id_tache = $donprojet2['id_tache'];
+                                            ?>
+                                            <td><?php echo $pseudo ?></td>
+                                            <td><?php echo $Projets?></td>
+                                            <td> <?php $req3 = $bdd->prepare("Select * from taches where id_tache=:id_tache");
+                                                $req3->bindValue(':id_tache', $id_tache, PDO::PARAM_INT);
+                                                $req3->execute();
+                                                while ($donprojet2 = $req3->fetch()) {
+                                                    echo $donprojet2['nom'];
+                                                }
+                                                $req3->closeCursor();
+                                                ?></td>
+                                            <td> <?php echo $donprojet2['date']?></td>
+                                            <td> <?php echo $donprojet2['temps']?></td>
+
+                                            <?php
+                                        }
+                                    }
+                                    else
+                                    {
+                                        /*Utilisateur + client*/
+                                        if(empty($_POST['Clients'])!=1 && empty($_POST['date_dep'])==1)
+                                        {
+
+                                        }
+                                        else
+                                        {
+                                            /* Utilisateur + client + date */
+                                            if(empty($_POST['Clients'])!=1 && empty($_POST['date_dep'])!=1){
+
+                                            }
+                                            else
+                                            {
+                                                /* Utilisateur + date*/
+                                                if(empty($_POST['Clients'])==1 && empty($_POST['date_dep'])!=1&& empty($_POST['Projets'])==1)
+                                                {
+
+                                                }
+                                                else
+                                                {
 
 
-        </div>
+                                                }
+
+                                            }
+
+
+                                        }
+                                    }
+                                }
+
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    echo "Information manquante";
+                }
+
+                ?>
+            </div>
+<?php
+
+
+?>
+    </div>
         <!-- END CONTENT BODY -->
     </div>
     <!-- END CONTENT -->
