@@ -15,56 +15,73 @@ License: You must have a valid license purchased only from themeforest(the above
 <!--[if IE 9]> <html lang="fr" class="ie9 no-js"> <![endif]-->
 <meta charset="utf-8";
 <html lang="fr">
+<?php
+/**
+ * Created by PhpStorm.
+ * User: Infog
+ * Date: 14/04/2016
+ * Time: 15:22
+ */
+include "connexion.php";
+session_start();
+?>
 <body>
 <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+<!--
+<form method="post" action="test2.php" >
+    <div id="champs" >
+        <input type="text" name="titre[]" />
+        <input type="text" name="contenu[]" />
+        <input type="text" name="description[]" />
+        </br>
+        </br>
+    </div>
+
+        <script type="text/javascript" >
+            var div = document.getElementById('champs');
+            function addInput(nam){
+                var input = document.createElement("input");
+                input.name = name;
+                div.appendChild(input);
+            }
+            function addField() {
+                addInput("titre[]");
+                addInput("contenu[]");
+                addInput("description[]");
+                div.appendChild(document.createElement("br"));
+                div.appendChild(document.createElement("br"));
+            }
+        </script>
+    <button type="button" onclick="addField()" >+</button>
+    <input type="submit" />
+</form>
+-->
+<input type=text list=Projets name="Projets" >
+<datalist id=Projets >
+    <option>1</option>
+    <option>2</option>
+    <option>3</option>
+    <option>4</option>
+    <option>5</option>
+    <option>6</option>
+    </datalist>
+<p id="3"> Coucou</p>
+<button onclick="myFunction()">Try it</button>
+</body>
+<script src="../admin_2/assets/js/popup.js" type="text/javascript"></script>
 <script>
-    $(document).ready(function() {
-        var $regions = $('#regions');
-        var $departements = $('#departements');
-
-        // chargement des régions
-        $.ajax({
-            url: 'test_inte.php',
-            data: 'go', // on envoie $_GET['go']
-            dataType: 'json', // on veut un retour JSON
-            success: function(json) {
-                $.each(json, function(index, value) { // pour chaque noeud JSON
-                    // on ajoute l option dans la liste
-                    $regions.append('<option value="'+ index +'">'+ value +'</option>');
-                });
-            }
-        });
-
-        // à la sélection d une région dans la liste
-        $regions.on('change', function() {
-            var val = $(this).val(); // on récupère la valeur de la région
-
-            if(val != '') {
-                $departements.empty(); // on vide la liste des départements
-
-                $.ajax({
-                    url: 'france.php',
-                    data: 'id_region='+ val, // on envoie $_GET['id_region']
-                    dataType: 'json',
-                    success: function(json) {
-                        $.each(json, function(index, value) {
-                            $departements.append('<option value="'+ index +'">'+ value +'</option>');
-                        });
-                    }
-                });
-            }
-        });
+    $(function()
+    {
+    var $list;
+    $list = $('p');
+    $list.on('click',  function() {
+     $id= this.id
+        popup = window.open('modification_client.php?id='+$id, 'popup', 'height=600, width=500');
+    });
     });
 </script>
-<select id="regions" name="regions">
-    <option value="">-- Régions --</option>
-</select>
-
-<select id="departements" name="departements">
-    <option value="">-- Départements--</option>
-</select>
 
 <script src="https://code.jquery.com/jquery-1.12.3.js" integrity="sha256-1XMpEtA4eKXNNpXcJ1pmMPs8JV+nwLdEqwiJeCQEkyc=" crossorigin="anonymous"></script>
-<script src="js/your_js_file.js"></script>
+
 
 </html>

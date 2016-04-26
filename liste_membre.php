@@ -11,8 +11,8 @@ Like: www.facebook.com/keenthemes
 Purchase: http://themeforest.net/item/metronic-responsive-admin-dashboard-template/4021469?ref=keenthemes
 License: You must have a valid license purchased only from themeforest(the above link) in order to legally use the theme for your project.
 -->
-<!--[if IE 8]> <html lang="en" class="ie8 no-js"> <![endif]-->
-<!--[if IE 9]> <html lang="en" class="ie9 no-js"> <![endif]-->
+<!--[if IE 8]> <html lang="en" class="ie8 "> <![endif]-->
+<!--[if IE 9]> <html lang="en" class="ie9 "> <![endif]-->
 <!--[if !IE]><!-->
 <html lang="en">
 <?php include "head.html"?>
@@ -70,14 +70,14 @@ License: You must have a valid license purchased only from themeforest(the above
                             </div>
 
                         </div>
-                        <form>
-                            <?php $req= $bdd->prepare("Select utilisateur.pseudo, utilisateur.actif from utilisateur full JOIN groupe_projet on utilisateur.id_Users=groupe_projet.id_Users where utilisateur.actif='true'  and groupe_projet.id_projet=:projet") ;
+                        <form method="post">
+                            <?php $req= $bdd->prepare("Select utilisateur.pseudo from utilisateur where utilisateur.actif='true' and not EXISTS (Select * from groupe_projet where utilisateur.id_Users = groupe_projet.id_Users and groupe_projet.id_projet=:projet)") ;
                             $req->bindValue(':projet',$_SESSION['id_Projets'],PDO::PARAM_INT);
                             $req->execute();
                             while($donne=$req->fetch())
                             {
                                 ?>
-                            <INPUT type="button" name="<?php echo $donne['pseudo']?> " value= "<?php echo $donne['pseudo']?>">
+                            <INPUT type="submit"id="ajout" name="ajout" value= "<?php echo $donne['pseudo']?>">
                             <?php
                             }
                             $req->closeCursor()
@@ -85,6 +85,23 @@ License: You must have a valid license purchased only from themeforest(the above
 
 
                         </form>
+
+                        <?php if(isset($_POST['ajout'])) {
+                            $req= $bdd->prepare("Select utilisateur.id_Users from utilisateur where utilisateur.pseudo=:pseudo");
+                            $req->bindValue(':pseudo',$_POST['ajout'],Pdo::PARAM_STR);
+                            $req->execute();
+                            while ($donne= $req->fetch())
+                            {
+                                $id=$donne['id_Users'];
+                            }
+
+                            $req->closeCursor();
+                            $req=$bdd->prepare("Insert into groupe_projet(id_Users,id_projet,heure_prevu)values(:id,:projet,2)");
+                            $req->bindValue(':id',$id,PDO::PARAM_INT);
+                            $req->bindValue(':projet',$_SESSION['id_Projets'],PDO::PARAM_INT);
+                            $req->execute();
+                            }
+?>
                         <div class="portlet-body">
                             <div class="table-scrollable">
                                 <table class="table table-hover">
@@ -92,29 +109,30 @@ License: You must have a valid license purchased only from themeforest(the above
                                     <tr>
                                         <th>Utilisateur</th>
                                         <th>Adresse mail </th>
-                                        <th>Heure sur le projet</th>
-                                        <th>Les tâches</th>
+                                        <th>Heure  prévu sur le projet</th>
+                                        <th></th>
                                     </tr>
                                     </thead>
-                                    <tr>
-                                        <th> VR </th>
-                                        <th> romain.vervoort@sfr.fr </th>
-                                        <th> 20</th>
-                                        <th>
-                                            -a</br>
-                                            -b</br>
-                                            -c
-                                        </th>
-                                    </tr>
-                                    <tr>
-                                        <th> DB </th>
-                                        <th> d@b.com </th>
-                                        <th> 40</th>
-                                        <th> -d</br>
-                                            -e</br>
-                                            -f
-                                        </th>
-                                    </tr>
+
+                                        <?php
+                                        $req= $bdd->prepare("Select utilisateur.id_Users, utilisateur.pseudo,utilisateur.mail ,groupe_projet.heure_prevu from utilisateur,groupe_projet where utilisateur.id_Users=groupe_projet.id_Users and groupe_projet.id_projet=:projet  group by utilisateur.id_Users,groupe_projet.id_projet");
+                                        $req->bindValue(':projet',$_SESSION['id_Projets'],PDO::PARAM_INT);
+                                        $req->execute();
+                                        while($donne= $req->fetch())
+                                        {
+                                            ?>
+                                        <tr>
+                                            <th><?php echo $donne['pseudo']; ?></th>
+                                            <th ><?php echo $donne['mail']; ?></th>
+                                            <th><?php echo $donne['heure_prevu'].'Heures'; ?></th>
+                                            <th><?php echo '<a href="ajout_heure.php?id='. $donne['id_Users'] ?>" onclick="window.open(this.href, 'popup', 'height=200, width=200');return false">Ajouter des heures</a></th>
+                                            </tr>
+
+                                        <?php
+                                        }
+                                        ?>
+
+
 
 
 
@@ -152,8 +170,17 @@ License: You must have a valid license purchased only from themeforest(the above
         <i class="icon-arrow-up"></i>
     </div>
 </div>
-
-
+<script>
+    $(function()
+    {
+        var $list;
+        $list = $('th');
+        $list.on('click',  function() {
+            $id= this.id
+            popup = window.open('modification_client.php?id='+$id, 'popup', 'height=600, width=500');
+        });
+    });
+</script>
 </body>
 
 </html>

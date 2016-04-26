@@ -99,7 +99,7 @@ include "connexion.php";?>
                                     {
                                         ?>
                                         <tr>
-                                        <td><?php echo $donnee[0];?></td>
+                                        <td ><?php echo $donnee[0];?></td>
                                         <td><?php echo $donnee[1];?></td>
                                         <td> <?php echo $donnee[2];?></td>
                                             <!-- Affichage heure minute -->
