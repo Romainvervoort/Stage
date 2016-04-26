@@ -15,11 +15,20 @@ License: You must have a valid license purchased only from themeforest(the above
 <!--[if IE 9]> <html lang="en" class="ie9 no-js"> <![endif]-->
 <!--[if !IE]><!-->
 <html lang="en">
-<?php include "head.html"?>
+<?php include "head.html";
+include "connexion.php";
+
+
+?>
 <body class="page-header-fixed page-sidebar-closed-hide-logo page-container-bg-solid">
 <!-- BEGIN HEADER -->
 <!-- La nav bar -->
-<?php include "nav_bar.html"?>
+<?php include "nav_bar.php";
+if(isset($_GET['id']))
+{
+    $id_Projets=$_GET['id'];
+    $_SESSION['id_Projets']=$id_Projets;
+};?>
 
 <!-- END HEADER -->
 <!-- BEGIN HEADER & CONTENT DIVIDER -->
@@ -43,7 +52,42 @@ License: You must have a valid license purchased only from themeforest(the above
                 <div class="col-md-12">
                     <!-- BEGIN SAMPLE TABLE PORTLET-->
                     <div class="portlet light ">
-                      <center>   Titre du projet</center>
+                     <span class="caption-subject font-green bold uppercase"><center>  <?php $req= $bdd->prepare("Select * from projet where id_Projets=:id ");
+                          $req->bindValue(':id',$id_Projets,PDO::PARAM_INT);
+                          $req->execute();
+                          while($donne=$req->fetch())
+                          {
+                              echo $donne['nom'];
+                              $id= $donne['id_Entreprise'];
+                              $temps=(int)($donne['temps']/60);
+                              if($donne['temps_total']>0) {
+                                  $temps = $donne['temps'];
+                                  $tempstt = $donne['temps_total'];
+                                  $temps = (int)($temps / 60);
+                                  $avancement = ($temps * 100) / $tempstt;
+                              }
+                              else
+                              {
+                                  $avancement= 50;
+                              }
+
+
+                          }
+                          $req->closeCursor();?></center></span>
+                    </div>
+                    <!-- END SAMPLE TABLE PORTLET-->
+                </div>
+            </div>
+            <div class="row">
+
+                <div class="col-md-12">
+                    <!-- BEGIN SAMPLE TABLE PORTLET-->
+                    <div class="container">
+                       <center> <h2>Avancement du projet <?php echo $avancement?>%</h2></center>
+                        <div class="progress">
+                            <div class="progress-bar" role="progressbar" aria-valuenow="70" aria-valuemin="80" aria-valuemax="100" style="width:<?php echo $avancement?>%">
+                            </div>
+                        </div>
                     </div>
                     <!-- END SAMPLE TABLE PORTLET-->
                 </div>
@@ -53,17 +97,28 @@ License: You must have a valid license purchased only from themeforest(the above
                 <div class="col-md-12">
                     <!-- BEGIN SAMPLE TABLE PORTLET-->
                     <div class="portlet light ">
-                        <p> Barre de progression</p>
-                    </div>
-                    <!-- END SAMPLE TABLE PORTLET-->
-                </div>
-            </div>
-            <div class="row">
-
-                <div class="col-md-12">
-                    <!-- BEGIN SAMPLE TABLE PORTLET-->
-                    <div class="portlet light ">
-                        <p> Récapitulatif du projet</p>
+                        <p> Client : <?php
+                            $req = $bdd->prepare("Select nom from entreprise where id_Entreprise=:entreprise");
+                            $req->bindValue(':entreprise',$id,PDO::PARAM_INT);
+                            $req->execute();
+                            while($do=$req->fetch())
+                            {
+                                echo $do['nom'];
+                            }
+                            $req->closeCursor();
+                            ?> </p>
+                        <p> Temps passé sur le projet : <?php echo $temps ?> heures </p>
+                        <p> Nombre de Tâches : <?php
+                            $req = $bdd->prepare("Select count(id_Tache)As nbr from taches where id_Projet=:projet");
+                            $req->bindValue(':projet',$_SESSION['id_Projets'],PDO::PARAM_INT);
+                            $req->execute();
+                            while($do = $req->fetch())
+                            {
+                                echo $do['nbr'];
+                                $nbr=$do['nbr'];
+                            }
+                            $req->closeCursor();
+                            ?></p>
                     </div>
                     <!-- END SAMPLE TABLE PORTLET-->
                 </div>
@@ -74,14 +129,61 @@ License: You must have a valid license purchased only from themeforest(the above
                 <div class="col-md-6">
                     <!-- BEGIN SAMPLE TABLE PORTLET-->
                     <div class="portlet light ">
-                        <p> %des tâches à faire</p>
+                        <div class="portlet-title">
+                            <div class="caption">
+                                <i class="icon-cursor font-dark hide"></i>
+                                <span class="caption-subject font-dark bold uppercase">Avancement des tâches</span>
+                            </div>
+                        </div>
+                        <?php
+                        $req=$bdd->prepare("Select count(*)AS nbr2 from taches where id_Projet:projet and etat<>'fini';");
+                            $req->bindValue(':projet',$id_Projets,PDO::PARAM_INT);
+                        $req->execute();
+                        $val=$req->rowCount();
+                        if($val==0)
+                        {
+                            $nbr2=0;
+                        }
+                        else {
+                            while ($don = $req->fetch()) {
+                                $nbrfini = $don['nbr2'];
+                            }
+                            $req->closeCursor();
+                        }
+                        $pour = ($nbr2*100)/$nbr;
+                        ?>
+                        <p> Pourcentage déjà effectué</p>
+                        <div class="portlet-body">
+                            <div class="easy-pie-chart">
+                                <div class="number visits" data-percent="
+                                  <?php echo $pour; ?>"> <span><?php  echo $pour;  ?>%</span>
+                                </div>
+                        </div>
+
+                        <div class="margin-bottom-10 visible-sm"></div>
+
                     </div>
                     <!-- END SAMPLE TABLE PORTLET-->
                 </div>
+                    </div>
+
                 <div class="col-md-6">
                     <!-- BEGIN SAMPLE TABLE PORTLET-->
                     <div class="portlet light ">
-                        <p> Les tâches</p>
+                        <p> Les tâches : </p>
+                        <p><?php
+                        $req=$bdd->prepare("Select nom from taches where id_Projet=:projet and nom<>''");
+                            $req->bindValue(':projet',$id_Projets,PDO::PARAM_INT);
+                            $req->execute();
+                            while ($do= $req->fetch())
+                            {
+                                echo $do['nom'];
+                                ?>
+                            </br>
+                            <?php
+                            }
+                            $req->closeCursor();
+                            ?></p>
                     </div>
                     <!-- END SAMPLE TABLE PORTLET-->
                 </div>

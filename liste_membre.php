@@ -19,7 +19,7 @@ License: You must have a valid license purchased only from themeforest(the above
 <body class="page-header-fixed page-sidebar-closed-hide-logo page-container-bg-solid">
 <!-- BEGIN HEADER -->
 <!-- La nav bar -->
-<?php include "nav_bar.html"?>
+<?php include "nav_bar.php"?>
 
 <!-- END HEADER -->
 <!-- BEGIN HEADER & CONTENT DIVIDER -->
@@ -71,9 +71,18 @@ License: You must have a valid license purchased only from themeforest(the above
 
                         </div>
                         <form>
-                            <INPUT type="button" name="nom" value= "user1">
-                            <INPUT type="button" name="nom" value= "user2">
-                            <INPUT type="button" name="nom" value= "user3">
+                            <?php $req= $bdd->prepare("Select utilisateur.pseudo, utilisateur.actif from utilisateur full JOIN groupe_projet on utilisateur.id_Users=groupe_projet.id_Users where utilisateur.actif='true'  and groupe_projet.id_projet=:projet") ;
+                            $req->bindValue(':projet',$_SESSION['id_Projets'],PDO::PARAM_INT);
+                            $req->execute();
+                            while($donne=$req->fetch())
+                            {
+                                ?>
+                            <INPUT type="button" name="<?php echo $donne['pseudo']?> " value= "<?php echo $donne['pseudo']?>">
+                            <?php
+                            }
+                            $req->closeCursor()
+?>
+
 
                         </form>
                         <div class="portlet-body">

@@ -11,15 +11,16 @@ Like: www.facebook.com/keenthemes
 Purchase: http://themeforest.net/item/metronic-responsive-admin-dashboard-template/4021469?ref=keenthemes
 License: You must have a valid license purchased only from themeforest(the above link) in order to legally use the theme for your project.
 -->
-<!--[if IE 8]> <html lang="en" class="ie8 no-js"> <![endif]-->
-<!--[if IE 9]> <html lang="en" class="ie9 no-js"> <![endif]-->
+<!--[if IE 8]> <html lang="fr" class="ie8 no-js"> <![endif]-->
+<!--[if IE 9]> <html lang="fr" class="ie9 no-js"> <![endif]-->
 <!--[if !IE]><!-->
 <html lang="en">
-<?php include "head.html"?>
+<?php include "head.html" ;
+include "connexion.php"?>
 <body class="page-header-fixed page-sidebar-closed-hide-logo page-container-bg-solid">
 <!-- BEGIN HEADER -->
 <!-- La nav bar -->
-<?php include "nav_bar.html"?>
+<?php include "nav_bar.php"?>
 
 <!-- END HEADER -->
 <!-- BEGIN HEADER & CONTENT DIVIDER -->
@@ -59,48 +60,144 @@ License: You must have a valid license purchased only from themeforest(the above
             </div>
             <!-- Chemin -->
             <div class="row">
-                <div class="col-md-12">
-                    <!-- BEGIN EXAMPLE TABLE PORTLET-->
-                    <div class="portlet light ">
-                        <div class="portlet-title">
-                            <div class="caption font-dark">
-                                <span> Utilisateur + date du jour</span></br>
-                                <span class="caption-subject bold uppercase"> Prestation</span>
-                            </div>
-                        </div>
-                        <!-- EN tête-->
-                        <!--Début tableau -->
-                        <div class="portlet-body">
-                            <table class="table table-striped table-bordered table-hover table-checkable order-column" id="sample_1">
-                                <thead>
-                                <tr>
-                                    <th> Projet </th>
-                                    <th> Client </th>
-                                    <th> Tâche </th>
-                                    <th> heure </th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr class="odd gradeX">
-                                    <td> shuxer </td>
-                                    <td>
-                                        <a href="mailto:shuxer@gmail.com"> shuxer@gmail.com </a>
-                                    </td>
-                                    <td>
-                                        <span class="label label-sm label-success"> Approved </span>
-                                    </td>
-                                    <td class="center"> 12 Jan 2012 </td>
-                                    </tr>
-                                </tbody>
-                                            </table>
-                                        </div>
-                                    </td>
-                                </tr>
+                <?php
+                if(isset($_POST['employe'])) {
+                    $cpt =0;
+                    $employe = $_POST['employe'];
+                    $date = $_POST['annee'] . '-' . $_POST['mois'] . '-01';
 
-                                </tbody>
+                    $req = $bdd->prepare("Select * from utilisateur where pseudo=:pseudo");
+                    $req->bindValue(':pseudo', $employe, PDO::PARAM_STR);
+                    $req->execute();
+                    while ($donnees = $req->fetch()) {
+                        $id_Users = $donnees['id_Users'];
+                    }
+                    $req->closeCursor();
+                    $nbrjour = cal_days_in_month(CAL_GREGORIAN, $_POST['mois'], $_POST['annee']);
+                    for ($i = 1; $i <= $nbrjour; $i++) {
+                        $date = $_POST['annee'] . '-' . $_POST['mois'] . '-'.$i;
+                        ?>
+                        <div class="portlet light ">
+                            <div class="portlet-title">
+                                <div class="caption font-dark">
+                                    <span
+                                        class="caption-subject bold uppercase"> <?php echo $employe . ' / ' . date('l j F Y', mktime(0, 0, 0, $_POST['mois'], $i, $_POST['annee'])) . '   ' . 'Semaine :' . date('W', mktime(0, 0, 0, $_POST['mois'], $i, $_POST['annee'])) ?></span>
+                                </div>
+                            </div>
+                            <!-- EN tête-->
+                            <!--Début tableau -->
+
+                            <div class="portlet-body">
+                                <table class="table table-striped table-bordered table-hover table-checkable order-column"
+                                    id="sample_1">
+                                    <thead>
+                                    <tr><th></th>
+                                        <th> Projet</th>
+                                        <th> Client</th>
+                                        <th> Tâche</th>
+                                        <th> Description</th>
+                                        <th> heure</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+
+                                        <?php
+                                        $req2= $bdd->prepare("Select * from taches where id_Users=:id_Users and date_taches=:dates");
+                                        $req2->bindValue(':id_Users',$id_Users,PDO::PARAM_INT);
+                                        $req2->bindValue(':dates',$date,PDO::PARAM_STR);
+                                        $req2->execute();
+                                        if($req2->rowCount()==0)
+                                        {
+                                            ?>
+                                            <tr class="odd gradeX">
+                                            <td>Pas de donnée   </td>
+                                            <td> </td>
+                                            <td> </td>
+                                            <td> </td>
+                                            <td> </td>
+                                                <td></td>
+                                            </tr>
+                                            <?php
+                                        }
+                                            else
+                                            {
+                                                while($don=$req2->fetch())
+                                                {
+                                                ?>
+                                                    <tr class="odd gradeX">
+                                                        <td></td>
+                                                    <?php
+                                                    $req3 = $bdd->prepare("Select * from projet where id_Projets=:id_projets");
+                                                    $req3 -> bindValue(':id_projets',$don['id_Projet'],PDO::PARAM_INT);
+                                                    $req3 ->execute();
+                                                    while ($donpro=$req3->fetch())
+                                                    {
+                                                        ?>
+                                                        <td><?php echo $donpro['nom'];?></td>
+                                                        <?php
+                                                        $id = $donpro['id_Entreprise'];
+                                                    }
+                                                    $req3->closeCursor();
+                                                    ?>
+                                                    <?php
+                                              $req4 = $bdd->prepare("Select * from Entreprise where id_Entreprise=:id_entreprise");
+                                                    $req4->bindValue(':id_entreprise',$id,PDO::PARAM_INT);
+                                                    $req4->execute();
+                                                    while($donne= $req4->fetch())
+                                                    {
+                                                        ?>
+                                                        <td><?php echo $donne['nom'];?></td>
+                                                        <?php
+                                                    }
+                                                    $req4->closeCursor();
+
+                                                        ?>
+                                                        <td><?php echo $don['nom'];?></td>
+                                                        <td><?php echo $don['description'];?></td>
+                                                        <td> <?php $temps= $don['temps'];
+                                                            echo (int)($temps/60).'Heures'.($temps-((int)($temps/60))*60).'Minutes';
+                                                        $cpt=$cpt+$don['temps'];?></td>
+                                                    </tr>
+
+                                                    <?php
+                                                }
+
+                                            }
+                                        ?>
+
+
+                                    </tbody>
+                                </table>
+                        <?php
+                        $var =date('l', mktime(0, 0, 0, $_POST['mois'], $i, $_POST['annee']));
+                        $var2 = "Sunday";
+
+                        if(strcmp($var,$var2)==0)
+                        {
+                        ?>
+                        <h1><center><?php echo (int)($cpt/60).'Heures'.($cpt-((int)($cpt/60)*60)).'Minutes';?> Semaine : <?php echo date('W', mktime(0, 0, 0, $_POST['mois'], $i, $_POST['annee']))?></center></h1>
+                        <?php
+                        $cpt=0;
+                    }
+                    ?>
+                            </div>
+                            </td>
+                            </tr>
+
+                            </tbody>
                             </table>
                         </div>
-                    </div>
+                        <?php
+                    }
+                }
+                else
+                {
+
+                }
+                ?>
+
+
+
                     <!-- END EXAMPLE TABLE PORTLET-->
                 </div>
             </div>

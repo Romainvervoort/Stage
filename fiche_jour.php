@@ -15,11 +15,12 @@ License: You must have a valid license purchased only from themeforest(the above
 <!--[if IE 9]> <html lang="en" class="ie9 no-js"> <![endif]-->
 <!--[if !IE]><!-->
 <html lang="en">
-<?php include "head.html"?>
+<?php include "head.html";
+include "connexion.php"?>
 <body class="page-header-fixed page-sidebar-closed-hide-logo page-container-bg-solid">
 <!-- BEGIN HEADER -->
 <!-- La nav bar -->
-<?php include "nav_bar.html"?>
+<?php include "nav_bar.php"?>
 
 <!-- END HEADER -->
 <!-- BEGIN HEADER & CONTENT DIVIDER -->
@@ -56,6 +57,7 @@ License: You must have a valid license purchased only from themeforest(the above
             </div>
 
             <div class="row">
+
                 <div class="col-md-12">
                     <!-- BEGIN PORTLET-->
                     <div class="portlet light form-fit ">
@@ -68,27 +70,52 @@ License: You must have a valid license purchased only from themeforest(the above
                         </div>
                         <div class="portlet-body form">
                             <!-- BEGIN FORM-->
-                            <form action="#" class="form-horizontal form-bordered">
+                            <form action="fiche_jour_affichage.php" method="post" class="form-horizontal form-bordered">
                                 <div class="form-body">
                                     <div class="form-group">
                                         <label class="control-label col-md-3">Employé </label>
                                         <div class="col-md-4">
-                                            <input class="form-control" id="mask_date" type="text" />
+                                            <input type=text list=employe name="employe" >
+                                            <datalist id=employe >
+                                                <?php
+                                                $rep = $bdd-> query("Select * from utilisateur");
+                                                while($donnees=$rep->fetch())
+                                                {
+                                                ?>
+                                                <option>
+                                                    <?php echo $donnees['pseudo'];
+                                                    }
+                                                    $rep->closeCursor()
+                                                    ?>
+                                            </datalist>
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <label class="control-label col-md-3">Mois à éditer</label>
                                         <div class="col-md-4">
-                                            <input class="form-control" id="mask_date1" type="text" />
-
-                                        </div>
+                                            <input type=text list=mois name="mois" >
+                                            <datalist name="mois"id=mois >
+                                                <option> 01</option>
+                                                <option> 02</option>
+                                                <option> 03</option>
+                                                <option> 04</option>
+                                                <option> 05</option>
+                                                <option> 06</option>
+                                                <option> 07</option>
+                                                <option> 08</option>
+                                                <option> 09</option>
+                                                <option> 10</option>
+                                                <option> 11</option>
+                                                <option> 12</option>
+                                                </datalist>
                                     </div>
+                                        </div>
+
                                     <div class="form-group">
                                         <label class="control-label col-md-3">Année à éditer</label>
                                         <div class="col-md-4">
-                                            <input class="form-control" id="mask_date1" type="text" />
-
-                                        </div>
+                                            <input class="form-control" id="annee" name="annee" type="text" />
+                                            </div>
                                     </div>
 
                                 </div>

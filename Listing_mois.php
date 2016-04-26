@@ -15,11 +15,12 @@ License: You must have a valid license purchased only from themeforest(the above
 <!--[if IE 9]> <html lang="en" class="ie9 no-js"> <![endif]-->
 <!--[if !IE]><!-->
 <html lang="en">
-<?php include "head.html"?>
+<?php include "head.html";
+include "connexion.php"?>
 <body class="page-header-fixed page-sidebar-closed-hide-logo page-container-bg-solid">
 <!-- BEGIN HEADER -->
 <!-- La nav bar -->
-<?php include "nav_bar.html"?>
+<?php include "nav_bar.php"?>
 
 <!-- END HEADER -->
 <!-- BEGIN HEADER & CONTENT DIVIDER -->
@@ -59,13 +60,26 @@ License: You must have a valid license purchased only from themeforest(the above
             </div>
             <!-- Chemin -->
             <div class="row">
-                <div class="col-md-12">
+                <?php
+                $cpt =0;
+                $date = '2016' . '-' . '04' . '-01';
+
+                $req = $bdd->prepare("Select * from utilisateur");
+                $req->execute();
+                while ($donnees = $req->fetch()) {
+                    $id_Users = $donnees['id_Users'];
+                }
+                $req->closeCursor();
+                $nbrjour = cal_days_in_month(CAL_GREGORIAN, '04', '2016');
+                for ($i = 1; $i <= $nbrjour; $i++) {
+                    $date = '2016' . '-' . '04' . '-' . $i;
+?>
+                    <div class="col-md-12">
                     <!-- BEGIN EXAMPLE TABLE PORTLET-->
                     <div class="portlet light ">
                         <div class="portlet-title">
                             <div class="caption font-dark">
-                                <span> Lundi04/04/2016</span></br>
-                                <span class="caption-subject bold uppercase"> Prestation</span>
+                                <span> <?php echo date('l j F Y', mktime(0, 0, 0, 04, $i, 2016));?></span></br>
                             </div>
                         </div>
                         <!-- EN tête-->
@@ -74,27 +88,56 @@ License: You must have a valid license purchased only from themeforest(the above
                             <table class="table table-striped table-bordered table-hover table-checkable order-column" id="sample_1">
                                 <thead>
                                 <tr>
-                                    <th> Nom </th>
-                                    <th> Prénom </th>
+                                    <th> Pseudo </th>
                                     <th> Arrivé </th>
                                     <th> Départ midi </th>
                                     <th> Retour midi </th>
                                     <th> Départ  </th>
+                                    <th> Total</th>
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr class="odd gradeX">
-                                    <td> Vervoort </td>
-                                    <td>
-                                       Romain
-                                    </td>
-                                    <td>
-                                       08:30:00
-                                    </td>
-                                    <td>13:00:00</td>
-                                    <td>14:00:00</td>
-                                    <td>17:30:00</td>
+                                <tr>
+                                <?php
+                                $req =$bdd->prepare("Select * from horaire where Jours=:dates and id_Users<>0");
+                                $req->bindValue(':dates',$date,PDO::PARAM_STR);
+                                $req->execute();
+                                while($donnees= $req->fetch())
+                                {
+                                $req2=$bdd->prepare("Select * from utilisateur where id_Users=:id_user");
+                                    $req2->bindValue(':id_user',$donnees['id_Users']);
+                                    $req2->execute();
+                                    while($donpseudo = $req2->fetch())
+                                    {
+                                        ?>
+                                <td><?php echo $donpseudo['pseudo']; ?></td>
+                                <?php
+                                    }
+                                    $req2->closeCursor();
+                                    ?>
+                                <td><?php echo $donnees['Arrive'];?></td>
+                                <td> <?php echo $donnees['Depart_midi'];?></td>
+                                <td><?php echo $donnees['Retour_midi']?></td>
+                                <td><?php echo $donnees['Depart'];?></td>
+                                <td> <?php
+                                    $arrive = explode(':',$donnees['Arrive']);
+                                    $depmidi =explode(':',$donnees['Depart_midi']);
+                                    $retourmidi = explode(':',$donnees['Retour_midi']);
+                                    $depart = explode(':',$donnees['Depart']);
+                                    $totalmatin= ((($depmidi[0]-$arrive[0])*60))+($depmidi[0]-$arrive[0]);
+
+                                 //   echo ((int)($totalmatin/60)).'Heures'.($totalmatin-(((int)$totalmatin/60)*60)).'Minutes';
+                                    $h1=strtotime($donnees['Arrive']);
+                                    $h2=strtotime($donnees['Depart_midi']);
+                                    $h3=strtotime($donnees['Retour_midi']);
+                                    $h4=strtotime($donnees['Depart']);
+                                    $res1=gmdate('H:i',($h2-$h1)+($h4-$h3));
+                                  echo $res1;
+                                    ?> </td>
                                 </tr>
+                                <?php
+                                }
+                                ?>
                                 </tbody>
                             </table>
                         </div>
@@ -105,57 +148,13 @@ License: You must have a valid license purchased only from themeforest(the above
                         </table>
                     </div>
                 </div>
-                <!-- END EXAMPLE TABLE PORTLET-->
-            </div>
-            <div class="row">
-                <div class="col-md-12">
-                    <!-- BEGIN EXAMPLE TABLE PORTLET-->
-                    <div class="portlet light ">
-                        <div class="portlet-title">
-                            <div class="caption font-dark">
-                                <span> Lundi04/04/2016</span></br>
-                                <span class="caption-subject bold uppercase"> Prestation</span>
-                            </div>
-                        </div>
-                        <!-- EN tête-->
-                        <!--Début tableau -->
-                        <div class="portlet-body">
-                            <table class="table table-striped table-bordered table-hover table-checkable order-column" id="sample_1">
-                                <thead>
-                                <tr>
-                                    <th> Nom </th>
-                                    <th> Prénom </th>
-                                    <th> Arrivé </th>
-                                    <th> Départ midi </th>
-                                    <th> Retour midi </th>
-                                    <th> Départ  </th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr class="odd gradeX">
-                                    <td> Vervoort </td>
-                                    <td>
-                                        Romain
-                                    </td>
-                                    <td>
-                                        08:30:00
-                                    </td>
-                                    <td>13:00:00</td>
-                                    <td>14:00:00</td>
-                                    <td>17:30:00</td>
-                                </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        </td>
-                        </tr>
+                <?php
+                }
+                ?>
 
-                        </tbody>
-                        </table>
-                    </div>
-                </div>
                 <!-- END EXAMPLE TABLE PORTLET-->
             </div>
+
         </div>
 
 

@@ -25,6 +25,7 @@ if (isset($_POST['nom'])) {
      $insert->bindValue(':num',$num,PDO::PARAM_STR);
      $insert->bindValue(':cdp',$cdp,PDO::PARAM_INT);
     $insert->execute();
+    header('Location: ../admin_2/formulaire_client.php');
 }
 else
 {

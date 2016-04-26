@@ -17,6 +17,7 @@ License: You must have a valid license purchased only from themeforest(the above
 <html lang="en">
 <?php include "head.html";
 include "connexion.php"; ?>
+<script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
 <body class="page-header-fixed page-sidebar-closed-hide-logo page-container-bg-solid">
 <!-- BEGIN HEADER -->
 <!-- La nav bar -->
@@ -68,10 +69,6 @@ include "connexion.php"; ?>
                                 <span class="caption-subject bold uppercase"> Extraction des heures de production</span>
                             </div>
                         </div>
-                        <!-- EN tête-->
-                        <!--Début tableau -->
-
-                                    <!-- Récupération des informations -->
                                     <?php
                                     if(isset ($_POST['date_dep'])) {
                                         /* Récupération des check boxe checked */
@@ -84,296 +81,393 @@ include "connexion.php"; ?>
                                             $today = date("Y-m-d");
                                         }
                                         // echo empty($_POST['Projets']);
-                                        $id_Users="";
-                                    $req = $bdd->query("Select * from utilisateur where actif='true'");
-                                    while ($donnees = $req->fetch()) {
-                                       $pseudo= $donnees['pseudo'];
+                                        $id_Users = "";
+                                        $req = $bdd->query("Select * from utilisateur where actif='true'");
+                                        while ($donnees = $req->fetch()) {
+                                            $pseudo = $donnees['pseudo'];
 
-                                    if (isset($_POST['' . $pseudo])) {
-                                    if(strcmp($id_Users,"")==0)
-                                    {
-                                    $id_Users= $donnees['id_Users'];
-                                    }
-                                    else
-                                    {
-                                    $id_Users = $id_Users .','.$donnees['id_Users'];
-                                    }
-                                           }
-                                           }
+                                            if (isset($_POST['' . $pseudo])) {
+                                                if (strcmp($id_Users, "") == 0) {
+                                                    $id_Users = $donnees['id_Users'];
+                                                } else {
+                                                    $id_Users = $id_Users . ',' . $donnees['id_Users'];
+                                                }
+                                            }
+                                        }
                                         $req->closeCursor();
-                                        echo $id_Users;
-                                        $array=array_map('intval', explode(',', $id_Users));
-                                        $array = implode("','",$array);
-                               ?>
-                               <?php
-                               /*      Recherche avec un ou plusieur pseudo*/
-                               if (empty($_POST['Client']) == 1 && empty($_POST['Projets']) == 1 && empty($_POST['date_dep']) == 1) {
-                                   $proj = "";
+                                        $array = array_map('intval', explode(',', $id_Users));
+                                        $array = implode("','", $array);
+                                        ?>
+                                        <?php
+                                        /*      Recherche avec un ou plusieur pseudo*/
+                                        if (empty($_POST['Client']) == 1 && empty($_POST['Projets']) == 1 && empty($_POST['date_dep']) == 1) {
+                                            $proj = "";
 
-                                   ?>
-                                   <?php
-                                   $req = $bdd->prepare("Select utilisateur.pseudo, entreprise.nom,projet.nom,taches.nom,taches.date_taches,taches.temps,projet.temps_total, projet.temps from utilisateur,taches,projet,entreprise where taches.id_Users=utilisateur.id_Users and taches.id_Projet=projet.id_Projets and projet.id_Entreprise=entreprise.id_Entreprise and utilisateur.id_Users IN ('".$array."') and date_taches BETWEEN '2014-01-01' and '2016-12-31' ORDER by projet.nom ");
+                                            ?>
+                                            <?php
+                                            $req = $bdd->prepare("Select utilisateur.pseudo, entreprise.nom,projet.nom,taches.nom,taches.date_taches,taches.temps,projet.temps_total, projet.temps,taches.id_Tache,projet.id_Projets,entreprise.id_Entreprise from utilisateur,taches,projet,entreprise where taches.id_Users=utilisateur.id_Users and taches.id_Projet=projet.id_Projets and projet.id_Entreprise=entreprise.id_Entreprise and utilisateur.id_Users IN ('" . $array . "') ORDER by projet.nom ");
+                                            $req->execute();
+                                            while ($do = $req->fetch()) {
+                                                if (strcmp($proj, $do[2]) != 0) {
+                                                    ?>
+                                                    <div class="portlet-body">
+                                                    <table class="table table-striped table-bordered table-hover table-checkable order-column" id="sample_1">
+                                                    <thead>
+                                                    <?php echo $do[2] . ' -' . $do[1] . " - nombre d'heure prévu : " . $do[6] . " - Nombre d'heure passé :" . (int)($do[7] / 60); ?>
+                                                    </thead>
+                                                    <tbody>
+                                                    <tr>
+                                                        <th> Users</th>
+                                                        <th> Nom client</th>
+                                                        <th> Nom projet</th>
+                                                        <th> Tâche</th>
+                                                        <th> date</th>
+                                                        <th> Heure</th>
 
-                                   $req->execute();
-                                   while ($do = $req->fetch()) {
-                                       if (strcmp($proj, $do[2]) != 0) {
+                                                    </tr>
+                                                    <tbody>
+                                                    <tr class="odd gradeX">
+                                                        <td> <?php echo $do[0]; ?></td>
+                                                        <td> <?php echo '<a href="modification_client.php?id='.$do[10].'">';echo $do[1]; ?></a></td>
+                                                        <td><?php echo '<a href="modification_projet.php?id=' . $do[9] . '">';
+                                                            echo $do[2]; ?></a></td>
+                                                        <td> <?php echo'<a href="modification_tache.php?id='.$do[8].'">';echo $do[3]; ?></a></td>
+                                                        <td> <?php echo $do[4]; ?></td>
+                                                        <td> <?php echo (int)($do[5] / 60) . 'Heures';
+                                                            echo $do[5] - ((int)($do[5] / 60) * 60) . 'min' ?></td>
 
-                                           ?>
+                                                    </tr>
+                                                    </tbody>
+                                                    <?php
+                                                    $proj = $do[2];
+                                                } else {
+                                                    ?>
+                                                    <tr class="odd gradeX">
+                                                        <td> <?php echo $do[0]; ?></td>
+                                                        <td> <?php echo '<a href="modification_client.php?id='.$do[10].'">';echo $do[1]; ?></a></td>
+                                                        <td><?php echo '<a href="modification_projet.php?id=' . $do[9] . '">';
+                                                            echo $do[2]; ?></a></td>
+                                                        <td> <?php echo'<a href="modification_tache.php?id='.$do[8].'">';echo $do[3]; ?></a></td>
+                                                        <td> <?php echo $do[4]; ?></td>
+                                                        <td> <?php echo (int)($do[5] / 60) . 'Heures';
+                                                            echo $do[5] - ((int)($do[5] / 60) * 60) . 'min' ?></td>
+                                                    </tr>
+                                                    <?php
+                                                    $proj = $do[2];
+                                                }
 
-                                           <div class="portlet-body">
-                                           <table class="table table-striped table-bordered table-hover table-checkable order-column" id="sample_1">
-                                           <thead>
-                                           <?php  echo $do[2]. ' -'. $do[1]." - nombre d'heure prévu : ".$do[6] ." - Nombre d'heure passé :".(int)($do[7]/60);?>
-                                           </thead>
-                                           <tbody>
-                                           <tr>
-                                               <th> Users</th>
-                                               <th> Nom client</th>
-                                               <th> Nom projet</th>
-                                               <th> Tâche</th>
-                                               <th> date</th>
-                                               <th> Heure </th>
+                                            }
+                                            ?>
+                                            </div>
+                                            <?php
+                                            // Fin de la première recherche
+                                        } else {
+                                            // Utilisateur + Projet
+                                            if (empty($_POST['Client']) == 1 && empty($_POST['Projets']) != 1 && empty($_POST['date_dep']) == 1) {
+                                                $proj = "";
+                                                $req = $bdd->prepare("Select utilisateur.pseudo, entreprise.nom,projet.nom,taches.nom,taches.date_taches,taches.temps,projet.temps_total, projet.temps,taches.id_Tache,projet.id_Projets,entreprise.id_Entreprise from utilisateur,taches,projet,entreprise where taches.id_Users=utilisateur.id_Users and taches.id_Projet=projet.id_Projets and projet.id_Entreprise=entreprise.id_Entreprise and projet.nom=:pro  and utilisateur.id_Users IN ('" . $array . "')");
+                                                $req->bindValue(':pro', $_POST['Projets'], PDO::PARAM_STR);
+                                                $req->execute();
+                                                while ($do = $req->fetch()) {
+                                                    if (strcmp($proj, $do[2]) != 0) {
+                                                        ?>
+                                                        <div class="portlet-body">
+                                                        <table class="table table-striped table-bordered table-hover table-checkable order-column" id="sample_1">
+                                                        <thead>
+                                                        <?php echo $do[2] . ' -' . $do[1] . " - nombre d'heure prévu : " . $do[6] . " - Nombre d'heure passé :" . (int)($do[7] / 60); ?>
+                                                        </thead>
+                                                        <tbody>
+                                                        <tr>
+                                                            <th> Users</th>
+                                                            <th> Nom client</th>
+                                                            <th> Nom projet</th>
+                                                            <th> Tâche</th>
+                                                            <th> date</th>
+                                                            <th> Heure</th>
 
-                                           </tr>
-                                           <tbody>
-                                           <tr class="odd gradeX">
-                                               <td> <?php echo $do[0]; ?></td>
-                                               <td> <?php echo $do[1]; ?></td>
-                                               <td> <?php echo $do[2]; ?></td>
-                                               <td> <?php echo $do[3]; ?></td>
-                                               <td> <?php echo $do[4]; ?></td>
-                                                <td> <?php echo (int)($do[5]/60).'Heures';
-                                                 echo $do[5]-((int)($do[5]/60)*60).'min'?></td>
+                                                        </tr>
+                                                        <tbody>
+                                                        <tr class="odd gradeX">
+                                                            <td> <?php echo $do[0]; ?></td>
+                                                            <td> <?php echo '<a href="modification_client.php?id='.$do[10].'">';echo $do[1]; ?></a></td>
+                                                            <td><?php echo '<a href="modification_projet.php?id=' . $do[9] . '">';
+                                                                echo $do[2]; ?></a></td>
+                                                            <td> <?php echo'<a href="modification_tache.php?id='.$do[8].'">';echo $do[3]; ?></a></td>
+                                                            <td> <?php echo $do[4]; ?></td>
+                                                            <td> <?php echo (int)($do[5] / 60) . 'Heures';
+                                                                echo $do[5] - ((int)($do[5] / 60) * 60) . 'min' ?></td>
 
-                                           </tr>
-                                           </tbody>
-                                           <?php
-                                           $proj= $do[2];
-                                       }
-                                       else {
-                                           ?>
-                                           <tr class="odd gradeX">
-                                               <td> <?php echo $do[0]; ?></td>
-                                               <td> <?php echo $do[1]; ?></td>
-                                               <td> <?php echo $do[2]; ?></td>
-                                               <td> <?php echo $do[3]; ?></td>
-                                               <td> <?php echo $do[4]; ?></td>
-                                               <td> <?php echo (int)($do[5]/60).'Heures';
-                                                echo $do[5]-((int)($do[5]/60)*60).'min'?></td>
+                                                        </tr>
+                                                        </tbody>
+                                                        <?php
+                                                        $proj = $do[2];
+                                                    } else {
+                                                        ?>
+                                                        <tr class="odd gradeX">
+                                                            <td> <?php echo $do[0]; ?></td>
+                                                            <td> <?php echo '<a href="modification_client.php?id='.$do[10].'">';echo $do[1]; ?></a></td>
+                                                            <td> <?php echo '<a href="modification_projet.php?id=' . $do[9] . '">';
+                                                                echo $do[2]; ?></a></td>
+                                                            <td> <?php echo'<a href="modification_tache.php?id='.$do[8].'">';echo $do[3]; ?></a></td>
+                                                            <td> <?php echo $do[4]; ?></td>
+                                                            <td> <?php echo (int)($do[5] / 60) . 'Heures';
+                                                                echo $do[5] - ((int)($do[5] / 60) * 60) . 'min' ?></td>
+                                                        </tr>
+                                                        <?php
+                                                        $proj = $do[2];
+                                                    }
 
-                                           </tr>
-               <?php
-                                           $proj= $do[2];
-                                       }
+                                                }
+                                                ?>
+                                                </div>
+                                                <?php
+                                            } else {
+                                                if (empty($_POST['Client']) == 1 && empty($_POST['Projets']) != 1 && empty($_POST['date_dep']) != 1) {
+                                                    $proj = "";
+                                                    $req = $bdd->prepare("Select utilisateur.pseudo, entreprise.nom,projet.nom,taches.nom,taches.date_taches,taches.temps,projet.temps_total, projet.temps,taches.id_Tache,projet.id_Projets,entreprise.id_Entreprise from utilisateur,taches,projet,entreprise where taches.id_Users=utilisateur.id_Users and taches.id_Projet=projet.id_Projets and projet.id_Entreprise=entreprise.id_Entreprise and projet.nom=:pro  and utilisateur.id_Users IN ('" . $array . "') and taches.date_taches Between '$date_dep' and '$today' ORDER By projet.nom");
+                                                    $req->bindValue(':pro', $_POST['Projets'], PDO::PARAM_STR);
+                                                    $req->execute();
+                                                    while ($do = $req->fetch()) {
+                                                        if (strcmp($proj, $do[2]) != 0) {
+                                                            ?>
+                                                            <div class="portlet-body">
+                                                            <table class="table table-striped table-bordered table-hover table-checkable order-column" id="sample_1">
+                                                            <thead>
+                                                            <?php echo $do[2] . ' -' . $do[1] . " - nombre d'heure prévu : " . $do[6] . " - Nombre d'heure passé :" . (int)($do[7] / 60); ?>
+                                                            </thead>
+                                                            <tbody>
+                                                            <tr>
+                                                                <th> Users</th>
+                                                                <th> Nom client</th>
+                                                                <th> Nom projet</th>
+                                                                <th> Tâche</th>
+                                                                <th> date</th>
+                                                                <th> Heure</th>
 
-                                   }
-                                           ?>
-                                               </div>
-                                               <?php
-                                               // Fin de la première recherche
-                               }
+                                                            </tr>
+                                                            <tbody>
+                                                            <tr class="odd gradeX">
+                                                                <td> <?php echo $do[0]; ?></td>
+                                                                <td> <?php echo '<a href="modification_client.php?id='.$do[10].'">';echo $do[1]; ?></a></td>
+                                                                <td><?php echo '<a href="modification_projet.php?id=' . $do[9] . '">';
+                                                                    echo $do[2]; ?></a></td>
+                                                                <td> <?php echo'<a href="modification_tache.php?id='.$do[8].'">';echo $do[3]; ?></a></td>
+                                                                <td> <?php echo $do[4]; ?></td>
+                                                                <td> <?php echo (int)($do[5] / 60) . 'Heures';
+                                                                    echo $do[5] - ((int)($do[5] / 60) * 60) . 'min' ?></td>
+
+                                                            </tr>
+                                                            </tbody>
+                                                            <?php
+                                                            $proj = $do[2];
+                                                        } else {
+                                                            ?>
+                                                            <tr class="odd gradeX">
+                                                                <td> <?php echo $do[0]; ?></td>
+                                                                <td> <?php echo '<a href="modification_client.php?id='.$do[10].'">';echo $do[1]; ?></a></td>
+                                                                <td><?php echo '<a href="modification_projet.php?id=' . $do[9] . '">';
+                                                                    echo $do[2]; ?></a></td>
+                                                                <td> <?php echo'<a href="modification_tache.php?id='.$do[8].'">';echo $do[3]; ?></a></td>
+                                                                <td> <?php echo $do[4]; ?></td>
+                                                                <td> <?php echo (int)($do[5] / 60) . 'Heures';
+                                                                    echo $do[5] - ((int)($do[5] / 60) * 60) . 'min' ?></td>
+                                                            </tr>
+                                                            <?php
+                                                            $proj = $do[2];
+                                                        }
+
+                                                    }
+                                                    ?>
+                                                    </div>
+                                                    <?php
+                                                } else {
+                                                    if (empty($_POST['Client']) != 1 && empty($_POST['Projets']) == 1 && empty($_POST['date_dep']) == 1) {
+                                                        $proj = "";
+                                                        $req = $bdd->prepare("Select utilisateur.pseudo, entreprise.nom,projet.nom,taches.nom,taches.date_taches,taches.temps,projet.temps_total, projet.temps,taches.id_Tache,projet.id_Projets,entreprise.id_Entreprise from utilisateur,taches,projet,entreprise where taches.id_Users=utilisateur.id_Users and taches.id_Projet=projet.id_Projets and projet.id_Entreprise=entreprise.id_Entreprise and entreprise.nom=:entreprise  and utilisateur.id_Users IN ('" . $array . "')");
+                                                        $req->bindValue(':entreprise', $_POST['Client'], PDO::PARAM_STR);
+                                                        $req->execute();
+                                                        while ($do = $req->fetch()) {
+                                                            if (strcmp($proj, $do[2]) != 0) {
+                                                                ?>
+                                                                <div class="portlet-body">
+                                                                <table class="table table-striped table-bordered table-hover table-checkable order-column" id="sample_1">
+                                                                <thead>
+                                                                <?php echo $do[2] . ' -' . $do[1] . " - nombre d'heure prévu : " . $do[6] . " - Nombre d'heure passé :" . (int)($do[7] / 60); ?>
+                                                                </thead>
+                                                                <tbody>
+                                                                <tr>
+                                                                    <th> Users</th>
+                                                                    <th> Nom client</th>
+                                                                    <th> Nom projet</th>
+                                                                    <th> Tâche</th>
+                                                                    <th> date</th>
+                                                                    <th> Heure</th>
+
+                                                                </tr>
+                                                                <tbody>
+                                                                <tr class="odd gradeX">
+                                                                    <td> <?php echo $do[0]; ?></td>
+                                                                    <td> <?php echo '<a href="modification_client.php?id='.$do[10].'">';echo $do[1]; ?></a></td>
+                                                                    <td><?php echo '<a href="modification_projet.php?id=' . $do[9] . '">';
+                                                                        echo $do[2]; ?></a></td>
+                                                                    <td> <?php echo'<a href="modification_tache.php?id='.$do[8].'">';echo $do[3]; ?></a></td>
+                                                                    <td> <?php echo $do[4]; ?></td>
+                                                                    <td> <?php echo (int)($do[5] / 60) . 'Heures';
+                                                                        echo $do[5] - ((int)($do[5] / 60) * 60) . 'min' ?></td>
+
+                                                                </tr>
+                                                                </tbody>
+                                                                <?php
+                                                                $proj = $do[2];
+                                                            } else {
+                                                                ?>
+                                                                <tr class="odd gradeX">
+                                                                    <td> <?php echo $do[0]; ?></td>
+                                                                    <td> <?php echo '<a href="modification_client.php?id='.$do[10].'">';echo $do[1]; ?></a></td>
+                                                                    <td><?php echo '<a href="modification_projet.php?id=' . $do[9] . '">';
+                                                                        echo $do[2]; ?></a></td>
+                                                                    <td> <?php echo'<a href="modification_tache.php?id='.$do[8].'">';echo $do[3]; ?></a></td>
+                                                                    <td> <?php echo $do[4]; ?></td>
+                                                                    <td> <?php echo (int)($do[5] / 60) . 'Heures';
+                                                                        echo $do[5] - ((int)($do[5] / 60) * 60) . 'min' ?></td>
+                                                                </tr>
+                                                                <?php
+                                                                $proj = $do[2];
+                                                            }
+
+                                                        }
+                                                        ?>
+                                                        </div>
+                                                        <?php
+
+                                                    } else {
+                                                        if (empty($_POST['Client']) != 1 && empty($_POST['Projets']) == 1 && empty($_POST['date_dep']) != 1) {
+                                                            $proj = "";
+                                                            $req = $bdd->prepare(" Select utilisateur.pseudo, entreprise.nom,projet.nom,taches.nom,taches.date_taches,taches.temps,projet.temps_total, projet.temps,taches.id_Tache,projet.id_Projets,entreprise.id_Entreprise from utilisateur,taches,projet,entreprise where taches.id_Users=utilisateur.id_Users and taches.id_Projet=projet.id_Projets and projet.id_Entreprise=entreprise.id_Entreprise and entreprise.nom=:entreprise and taches.date_taches BETWEEN '$date_dep'and '$today' and utilisateur.id_Users IN ('" . $array . "') ORDER by projet.nom");
+                                                            $req->bindValue(':entreprise', $_POST['Client'], PDO::PARAM_STR);
+                                                            $req->execute();
+                                                            while ($do = $req->fetch()) {
+                                                                if (strcmp($proj, $do[2]) != 0) {
+                                                                    ?>
+                                                                    <div class="portlet-body">
+                                                                    <table class="table table-striped table-bordered table-hover table-checkable order-column" id="sample_1">
+                                                                    <thead>
+                                                                    <?php echo $do[2] . ' -' . $do[1] . " - nombre d'heure prévu : " . $do[6] . " - Nombre d'heure passé :" . (int)($do[7] / 60); ?>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                    <tr>
+                                                                        <th> Users</th>
+                                                                        <th> Nom client</th>
+                                                                        <th> Nom projet</th>
+                                                                        <th> Tâche</th>
+                                                                        <th> date</th>
+                                                                        <th> Heure</th>
+
+                                                                    </tr>
+                                                                    <tbody>
+                                                                    <tr class="odd gradeX">
+                                                                        <td> <?php echo $do[0]; ?></td>
+                                                                        <td> <?php echo '<a href="modification_client.php?id='.$do[10].'">';echo $do[1]; ?></a></td>
+                                                                        <td><?php echo '<a href="modification_projet.php?id=' . $do[9] . '">';
+                                                                            echo $do[2]; ?></a></td>
+                                                                        <td> <?php echo'<a href="modification_tache.php?id='.$do[8].'">';echo $do[3]; ?></a></td>
+                                                                        <td> <?php echo $do[4]; ?></td>
+                                                                        <td> <?php echo (int)($do[5] / 60) . 'Heures';
+                                                                            echo $do[5] - ((int)($do[5] / 60) * 60) . 'min' ?></td>
+
+                                                                    </tr>
+                                                                    </tbody>
+                                                                    <?php
+                                                                    $proj = $do[2];
+                                                                } else {
+                                                                    ?>
+                                                                    <tr class="odd gradeX">
+                                                                        <td> <?php echo $do[0]; ?></td>
+                                                                        <td> <?php echo '<a href="modification_client.php?id='.$do[10].'">';echo $do[1]; ?></a></td>
+                                                                        <td><?php echo '<a href="modification_projet.php?id=' . $do[9] . '">';
+                                                                            echo $do[2]; ?></a></td>
+                                                                        <td> <?php echo'<a href="modification_tache.php?id='.$do[8].'">';echo $do[3]; ?></a></td>
+                                                                        <td> <?php echo $do[4]; ?></td>
+                                                                        <td> <?php echo (int)($do[5] / 60) . 'Heures';
+                                                                            echo $do[5] - ((int)($do[5] / 60) * 60) . 'min' ?></td>
+                                                                    </tr>
+                                                                    <?php
+                                                                    $proj = $do[2];
+                                                                }
+
+                                                            }
+                                                            ?>
+                                                            </div>
+                                                            <?php
+                                                        } else {
+                                                            if (empty($_POST['Client']) == 1 && empty($_POST['Projets']) == 1 && empty($_POST['date_dep']) != 1) {
+                                                                $proj = "";
+                                                                $req = $bdd->prepare(" Select utilisateur.pseudo, entreprise.nom,projet.nom,taches.nom,taches.date_taches,taches.temps,projet.temps_total, projet.temps,taches.id_Tache,projet.id_Projets,entreprise.id_Entreprise from utilisateur,taches,projet,entreprise where taches.id_Users=utilisateur.id_Users and taches.id_Projet=projet.id_Projets and projet.id_Entreprise=entreprise.id_Entreprise  and taches.date_taches BETWEEN '$date_dep'and '$today' and utilisateur.id_Users IN ('" . $array . "') ORDER BY projet.nom");
+                                                                $req->bindValue(':entreprise', $_POST['Client'], PDO::PARAM_STR);
+                                                                $req->execute();
+                                                                while ($do = $req->fetch()) {
+                                                                    if (strcmp($proj, $do[2]) != 0) {
+                                                                        ?>
+                                                                        <div class="portlet-body">
+                                                                        <table class="table table-striped table-bordered table-hover table-checkable order-column" id="sample_1">
+                                                                        <thead>
+                                                                        <?php echo $do[2] . ' -' . $do[1] . " - nombre d'heure prévu : " . $do[6] . " - Nombre d'heure passé :" . (int)($do[7] / 60); ?>
+                                                                        </thead>
+                                                                        <tbody>
+                                                                        <tr>
+                                                                            <th> Users</th>
+                                                                            <th> Nom client</th>
+                                                                            <th> Nom projet</th>
+                                                                            <th> Tâche</th>
+                                                                            <th> date</th>
+                                                                            <th> Heure</th>
+
+                                                                        </tr>
+                                                                        <tbody>
+                                                                        <tr class="odd gradeX">
+                                                                            <td> <?php echo $do[0]; ?></td>
+                                                                            <td> <?php echo '<a href="modification_client.php?id='.$do[10].'">';echo $do[1]; ?></a></td>
+                                                                            <td><?php echo '<a href="modification_projet.php?id=' . $do[9] . '">';
+                                                                                echo $do[2]; ?></a></td>
+                                                                            <td> <?php echo'<a href="modification_tache.php?id='.$do[8].'">';echo $do[3]; ?></a></td>
+                                                                            <td> <?php echo $do[4]; ?></td>
+                                                                            <td> <?php echo (int)($do[5] / 60) . 'Heures';
+                                                                                echo $do[5] - ((int)($do[5] / 60) * 60) . 'min' ?></td>
+
+                                                                        </tr>
+                                                                        </tbody>
+                                                                        <?php
+                                                                        $proj = $do[2];
+                                                                    } else {
+                                                                        ?>
+                                                                        <tr class="odd gradeX">
+                                                                            <td> <?php echo $do[0]; ?></td>
+                                                                            <td> <?php echo '<a href="modification_client.php?id='.$do[10].'">';echo $do[1]; ?></a></td>
+                                                                            <td><?php echo '<a href="modification_projet.php?id=' . $do[9] . '">';
+                                                                                echo $do[2]; ?></a></td>
+                                                                            <td> <?php echo'<a href="modification_tache.php?id='.$do[8].'">';echo $do[3]; ?></a></td>
+                                                                            <td> <?php echo $do[4]; ?></td>
+                                                                            <td> <?php echo (int)($do[5] / 60) . 'Heures';
+                                                                                echo $do[5] - ((int)($do[5] / 60) * 60) . 'min' ?></td>
+                                                                        </tr>
+                                                                        <?php
+                                                                        $proj = $do[2];
+                                                                    }
+
+                                                                }
+                                                                ?>
+                                                                </div>
+                                                                <?php
 
 
+                                                            }
+                                                        }
+                                                    }
 
-                       else
-                       {
-                           // Utilisateur + Projet
-                           if (empty($_POST['Client']) == 1 && empty($_POST['Projets'])!=1 && empty($_POST['date_dep'])==1) {
-                               $req = $bdd->query("Select * from utilisateur where actif='true'");
-                               while ($donnees = $req->fetch()) {
-                                   $pseudo = $donnees['pseudo'];
-                                   if (isset($_POST['' . $pseudo])) {
-                                       $id_Users = $donnees['id_Users'];
-                                      $req2 = $bdd->prepare("Select id_Projets,id_Entreprise from projet where nom=:projet");
-                                       $req2->bindValue(':projet',$_POST['Projets'],PDO::PARAM_STR);
-                                       $req2->execute();
-                                       while($dopro = $req2->fetch())
-                                       {
-                                           $id_projet= $dopro['id_Projets'];
-                                           $id_entreprise=$dopro['id_Entreprise'];
-
-                                       }
-                                       $req2->closeCursor();
-                                       $req4 = $bdd->prepare("Select * from entreprise WHERE id_Entreprise=:entreprise");
-                                       $req4->bindValue(':entreprise',$id_entreprise,PDO::PARAM_INT);
-                                       $req4->execute();
-                                       while($docli=$req4->fetch())
-                                       {
-                                           $entreprise=$docli['nom'];
-                                       }
-                                       $req4->closeCursor();
-
-                                       $req3=$bdd->prepare("Select * from taches where id_Projet=:projet and id_Users=:user");
-                                       $req3->bindValue(':projet',$id_projet,PDO::PARAM_INT);
-                                       $req3->bindValue(':user',$id_Users,PDO::PARAM_INT);
-                                       $req3->execute();
-                                       while($dontache= $req3->fetch())
-                                       {
-                                           ?>
-                                           <!-- tab1 -->
-                                           <td> <?php echo $pseudo ?></td>
-                                           <td> <?php echo $entreprise?></td>
-                                           <td> <?php echo $_POST['Projets']?></td>
-                                           <td> <?php echo $dontache['nom'];?></td>
-                                           <td> <?php echo $dontache['date_tache'];?></td>
-                                           <td> <?php echo $dontache['temps'];?></td></tr>
-                                           <!-- fin tab 1 -->
-                                           <?php
-
-
-                                       }
-                                   }
-                               }
-                           }
-                           else
-                           {
-                           if (empty($_POST['Client']) == 1 && empty($_POST['Projets'])!=1 && empty($_POST['date_dep'])!=1) {
-                               $req = $bdd->query("Select * from utilisateur where actif='true'");
-
-                               while ($donnees = $req->fetch()) {
-                                   $pseudo = $donnees['pseudo'];
-                                   if (isset($_POST['' . $pseudo])) {
-                                       $id_Users = $donnees['id_Users'];
-                                      $req2 = $bdd->prepare("Select id_Projets,id_Entreprise from projet where nom=:projet");
-                                       $req2->bindValue(':projet',$_POST['Projets'],PDO::PARAM_STR);
-                                       $req2->execute();
-                                       while($dopro = $req2->fetch())
-                                       {
-                                           $id_projet= $dopro['id_Projets'];
-                                           $id_entreprise=$dopro['id_Entreprise'];
-
-                                       }
-                                       $req2->closeCursor();
-                                       $req4 = $bdd->prepare("Select * from entreprise WHERE id_Entreprise=:entreprise");
-                                       $req4->bindValue(':entreprise',$id_entreprise,PDO::PARAM_INT);
-                                       $req4->execute();
-                                       while($docli=$req4->fetch())
-                                       {
-                                           $entreprise=$docli['nom'];
-                                       }
-                                       $req4->closeCursor();
-
-                                       $req3=$bdd->prepare("Select * from taches where id_Projet=:projet and id_Users=:user and date_taches BETWEEN '$date_dep' and '$today' GROUP BY id_Projet");
-                                       $req3->bindValue(':projet',$id_projet,PDO::PARAM_INT);
-                                       $req3->bindValue(':user',$donnees['id_Users'],PDO::PARAM_INT);
-                                       $req3->execute();
-
-
-                                       while($dontache= $req3->fetch())
-                                       {
-                                           ?>
-                                           <td> <?php echo $pseudo ?></td>
-                                           <td> <?php echo $entreprise?></td>
-                                           <td> <?php echo $_POST['Projets']?></td>
-                                           <td> <?php echo $dontache['nom'];?></td>
-                                           <td> <?php echo $dontache['date_tache'];?></td>
-                                           <td> <?php echo $dontache['temps'];?></td></tr>
-                                           <?php
-
-
-                                       }
-                                   }
-                               }
-                           }
-                           else
-                           {
-                           if (empty($_POST['Client']) != 1 && empty($_POST['Projets'])==1 && empty($_POST['date_dep'])==1) {
-                            $req = $bdd->query("Select * from utilisateur where actif='true'");
-                               while ($donnees = $req->fetch()) {
-                                   $pseudo = $donnees['pseudo'];
-                                   if (isset($_POST['' . $pseudo])) {
-                                       $id_Users = $donnees['id_Users'];
-                                       $req2= $bdd->prepare("Select id_Entreprise from entreprise where nom=:entreprise");
-                                       $req2->bindValue(':entreprise',$_POST['Client'],PDO::PARAM_STR);
-                                       $req2->execute();
-                                       while ($docli=$req2->fetch())
-                                       {
-                                       $id_entreprise=$docli['id_Entreprise'];
-
-                                       }
-                                       $req2->closeCursor();
-                                       $req3 = $bdd->prepare("Select nom,id_Projets from projet where id_Entreprise=:entreprise");
-                                       $req3->bindValue(':entreprise',$id_entreprise,PDO::PARAM_INT);
-                                       $req3->execute();
-                                       while($donpro = $req3->fetch())
-                                       {
-                                      $req4 = $bdd->prepare("Select * from taches where id_Projet=:projet and id_Users=:user");
-                                      $req4->bindValue(':projet',$donpro['id_Projets'],PDO::PARAM_INT);
-                                      $req4->bindValue(':user',$id_Users,PDO::PARAM_INT);
-                                      $req4->execute();
-                                      while($dontache= $req4->fetch())
-                                      {
-                                      ?>
-                                       <td> <?php echo $pseudo ?></td>
-                                       <td> <?php echo $_POST['Client']?></td>
-                                           <td> <?php echo $donpro['nom']?></td>
-                                           <td> <?php echo $dontache['nom'];?></td>
-                                           <td> <?php echo $dontache['date_tache'];?></td>
-                                           <td> <?php echo $dontache['temps'];?></td></tr>
-                                       <?php
-                                      }
-                                      $req4->closeCursor();
-                                       }
-                                       $req3->closeCursor();
-                                       }
-
-                                       }
-                                       $req->closeCursor();
-
-                           }
-                           else
-                           {
-                               if (empty($_POST['Client']) != 1 && empty($_POST['Projets'])==1 && empty($_POST['date_dep'])!=1) {
-                                    $req = $bdd->query("Select * from utilisateur where actif='true'");
-                                       while ($donnees = $req->fetch()) {
-                                           $pseudo = $donnees['pseudo'];
-                                           if (isset($_POST['' . $pseudo])) {
-                                               $id_Users = $donnees['id_Users'];
-                                               $req2= $bdd->prepare("Select id_Entreprise from entreprise where nom=:entreprise");
-                                               $req2->bindValue(':entreprise',$_POST['Client'],PDO::PARAM_STR);
-                                               $req2->execute();
-                                               while ($docli=$req2->fetch())
-                                               {
-                                               $id_entreprise=$docli['id_Entreprise'];
-
-                                               }
-                                               $req2->closeCursor();
-                                               $req3 = $bdd->prepare("Select nom,id_Projets from projet where id_Entreprise=:entreprise");
-                                               $req3->bindValue(':entreprise',$id_entreprise,PDO::PARAM_INT);
-                                               $req3->execute();
-                                               while($donpro = $req3->fetch())
-                                               {
-                                               //Declaration du tableau
-
-                                              $req4 = $bdd->prepare("Select * from taches where id_Projet=:projet and id_Users=:user and date_taches BETWEEN '$date_dep' and '$today' GROUP BY id_Projet");
-                                              $req4->bindValue(':projet',$donpro['id_Projets'],PDO::PARAM_INT);
-                                              $req4->bindValue(':user',$id_Users,PDO::PARAM_INT);
-                                              $req4->execute();
-                                              while($dontache= $req4->fetch())
-                                              {
-                                              ?>
-                                               <td> <?php echo $pseudo ?></td>
-                                               <td> <?php echo $_POST['Client']?></td>
-                                               <td> <?php echo $donpro['nom']?></td>
-                                               <td> <?php echo $dontache['nom'];?></td>
-                                               <td> <?php echo $dontache['date_tache'];?></td>
-                                               <td> <?php echo $dontache['temps'];?></td></tr>
-                                               <?php
-                                              }
-                                              $req4->closeCursor();
-                                               }
-                                               $req3->closeCursor();
-                                               }
-
-                                               }
-                                               $req->closeCursor();
-                                   }
-                               }
-                           }
-
-                       }
-               }
-                       }
+                                                }
+                                            }
+                                        }
+                                    }
                                else
                                {
                                    echo "Information manquante";

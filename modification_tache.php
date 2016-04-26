@@ -1,25 +1,23 @@
 <!DOCTYPE html>
-<!--
-Template Name: Metronic - Responsive Admin Dashboard Template build with Twitter Bootstrap 3.3.6
-Version: 4.5.5
-Author: KeenThemes
-Website: http://www.keenthemes.com/
-Contact: support@keenthemes.com
-Follow: www.twitter.com/keenthemes
-Dribbble: www.dribbble.com/keenthemes
-Like: www.facebook.com/keenthemes
-Purchase: http://themeforest.net/item/metronic-responsive-admin-dashboard-template/4021469?ref=keenthemes
-License: You must have a valid license purchased only from themeforest(the above link) in order to legally use the theme for your project.
--->
+
+
 <!--[if IE 8]> <html lang="en" class="ie8 no-js"> <![endif]-->
 <!--[if IE 9]> <html lang="en" class="ie9 no-js"> <![endif]-->
 <!--[if !IE]><!-->
 <html lang="en">
-<?php include "head.html"?>
+<?php include "connexion.php";
+include "head.html";
+include "nav_bar.php";
+if(isset($_GET['id']))
+{
+    $id= $_GET['id'];
+    $_SESSION['id_tache']=$id;
+};
+?>
 <body class="page-header-fixed page-sidebar-closed-hide-logo page-container-bg-solid">
 <!-- BEGIN HEADER -->
 <!-- La nav bar -->
-<?php include "nav_bar.php"?>
+
 
 <!-- END HEADER -->
 <!-- BEGIN HEADER & CONTENT DIVIDER -->
@@ -29,12 +27,9 @@ License: You must have a valid license purchased only from themeforest(the above
 <div class="page-container">
     <!-- Menu -->
     <?php include "menu.html"?>
-
     <div class="page-content-wrapper">
         <!-- BEGIN CONTENT BODY -->
         <div class="page-content">
-
-
             <!-- END PAGE HEADER-->
 
             <div class="page-bar">
@@ -49,12 +44,11 @@ License: You must have a valid license purchased only from themeforest(the above
                         <i class="fa fa-angle-right"></i>
                     </li>
                     <li>
-                        <span>Les Tags</span>
+                        <span>Mon profil</span>
                     </li>
                     </li>
                 </ul>
             </div>
-
             <div class="row">
 
                 <div class="col-md-6">
@@ -63,33 +57,49 @@ License: You must have a valid license purchased only from themeforest(the above
                         <div class="portlet-title">
                             <div class="caption">
                                 <i class="icon-user font-green"></i>
-                                <span class="caption-subject font-green bold uppercase">Mon profil</span>
+                                <span class="caption-subject font-green bold uppercase">Projet</span>
                             </div>
                         </div>
                         <div class="portlet-body">
                             <div class="table-scrollable">
                                 <table class="table table-hover">
                                     <thead>
-                                    <tr>
-                                        <th> Nom </th>
-                                        <th> Description </th>
-                                    </tr>
+                                    <form action="modif.php" method="post">
+                                        <tr>
+                                            <?php $req= $bdd->prepare("Select * from taches where id_Tache=:id");
+                                            $req->bindValue(':id',$id,PDO::PARAM_INT);
+                                            $req->execute();
+                                            while($donne=$req->fetch())
+                                            {
+                                            ?>
+                                            <th> Nom </th>
+                                            <th> <input type="text" name="nom" value="<?php echo $donne['nom']?>" </th>
+                                        </tr>
+                                        <tr>
+                                            <th> Description </th>
+                                            <th> <input type="text"name="description" value="<?php echo $donne['description'] ?>"</th>
+                                        </tr>
+                                        <tr>
+                                            <th>heure </th>
+                                            <th><input type="text" name="heure" value="<?php echo $donne['heure']?>" </th>
+                                        </tr>
+                                        <tr>
+                                            <th> minutes</th>
+                                            <th> <input type="text" name= "minute" value="<?php echo $donne["minute"];?>" </th>
+                                        </tr>
+                                        <?php
+                                        }
+                                        $req->closeCursor();
+                                        ?>
                                     </thead>
-                                    <tr>
-                                        <th> [B] </th>
-                                        <th> Bug </th>
-                                    </tr>
-                                    <tr>
-                                        <th> [SO]  </th>
-                                        <th> Suivi opérationnel </th>
-                                    </tr>
-                                    <tr>
-                                        <th> [RV]</th>
-                                        <th> Rendez-vous </th>
-                                    </tr>
+
 
 
                                 </table>
+                                <center>  <button type="submit" name="Modifier4" id="Modifier4" class="btn blue">Modifier</button>
+                                    <a href="client.php" <button type="submit" name="Retour" id="Retour" class="btn gray">Retour</button></a></center>
+                                </form>
+
                             </div>
                         </div>
                     </div>
@@ -111,20 +121,6 @@ License: You must have a valid license purchased only from themeforest(the above
 
     <!-- END QUICK SIDEBAR -->
 </div>
-<!-- END CONTAINER -->
-<!-- Etape 3 : le containter -->
-<!-- Etape 4 : le footer -->
-<!-- BEGIN FOOTER -->
-<div class="page-footer">
-    <div class="page-footer-inner"> 2015 &copy; Metronic by keenthemes.
-        <a href="http://themeforest.net/item/metronic-responsive-admin-dashboard-template/4021469?ref=keenthemes" title="Purchase Metronic just for 27$ and get lifetime updates for free" target="_blank">Purchase Metronic!</a>
-    </div>
-    <div class="scroll-to-top">
-        <i class="icon-arrow-up"></i>
-    </div>
-</div>
-<!-- END FOOTER -->
 
-</body>
 
 </html>

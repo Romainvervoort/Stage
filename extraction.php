@@ -20,7 +20,7 @@ include "connexion.php"?>
 <body class="page-header-fixed page-sidebar-closed-hide-logo page-container-bg-solid">
 <!-- BEGIN HEADER -->
 <!-- La nav bar -->
-<?php include "nav_bar.html"?>
+<?php include "nav_bar.php"?>
 
 <!-- END HEADER -->
 <!-- BEGIN HEADER & CONTENT DIVIDER -->
@@ -80,6 +80,7 @@ include "connexion.php"?>
                                                 {
 
                                                $pseudo = $donnees['pseudo'];?>
+
                                                     <INPUT type="checkbox" id="<?php echo $pseudo ?>" name="<?php echo  $pseudo ?>" value="<?php echo  $pseudo ?>"><?php echo $pseudo ?>
 
                                             <?php
@@ -128,13 +129,12 @@ include "connexion.php"?>
                                             <input type=text list=Projets name="Projets" >
                                             <datalist name="projet" id=Projets >
                                                 <?php
-                                                $rep = $bdd-> query("Select * from projet");
+                                                $rep = $bdd-> query("Select * from projet limit 20 ");
                                                 while($donnees=$rep->fetch())
                                                 {
                                                 ?>
                                                 <option value ="<?php echo $donnees['nom']; ?>"
                                                     ></option>
-
                                                 <?php
                                                     }
                                                     $rep->closeCursor();
@@ -185,7 +185,7 @@ include "connexion.php"?>
     </div>
 </div>
 <!-- END FOOTER -->
-<!--[if lt IE 9]>
+<!--[if lt IE 9]-->
 <script src="../assets/global/plugins/respond.min.js"></script>
 <script src="../assets/global/plugins/excanvas.min.js"></script>
 <![endif]-->

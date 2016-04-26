@@ -15,11 +15,12 @@ License: You must have a valid license purchased only from themeforest(the above
 <!--[if IE 9]> <html lang="en" class="ie9 no-js"> <![endif]-->
 <!--[if !IE]><!-->
 <html lang="en">
-<?php include "head.html"?>
+<?php include "head.html";
+include "connexion.php"?>
 <body class="page-header-fixed page-sidebar-closed-hide-logo page-container-bg-solid">
 <!-- BEGIN HEADER -->
 <!-- La nav bar -->
-<?php include "nav_bar.html"?>
+<?php include "nav_bar.php"?>
 
 <!-- END HEADER -->
 <!-- BEGIN HEADER & CONTENT DIVIDER -->
@@ -75,8 +76,8 @@ License: You must have a valid license purchased only from themeforest(the above
                         <a href="ajout_employe.php"><input type="submit" value="Ajouter un employé"></a>
 
                         <div class="portlet-body">
-                            <div class="table-scrollable">
-                                <table class="table table-hover">
+
+                                <table class="table table-striped table-bordered table-hover table-checkable order-column" id="sample_1">
                                     <thead>
                                     <tr>
                                         <th>Nom </th>
@@ -87,40 +88,69 @@ License: You must have a valid license purchased only from themeforest(the above
                                     </tr>
                                     </thead>
                                     <tr>
-                                        <th> Carl </th>
-                                        <th> Rick </th>
-                                        <th> CR</th>
+                                        <?php
+                                        $req= $bdd->prepare("Select * from utilisateur");
+                                        $req->execute();
+                                        while($donnees= $req->fetch()){
+                                            ?>
+                                        <th><?php echo $donnees['Nom'];?></th>
+                                        <th><?php echo $donnees['Prenom'];?></th>
+                                        <th><?php echo $donnees['pseudo'];?></th>
                                         <th>
+                                            <?php
+                                            $var1 = $donnees['administrateur'];
+                                            $var2 = "true";
+                                            if(strcmp($var1,$var2)==0)
+                                            {
+                                                ?>
                                             <form>
+                                                <INPUT type="checkbox" name="test" id="test" value="1"checked>
+
+                                            <?php
+                                            }
+                                            else
+                                            {
+                                               ?>
+
                                                 <INPUT type="checkbox" name="choix1" value="1">
+
+                                            <?php
+                                            }
+
+                                            ?>
+
+                                            </th>
+                                        <th>
+                                            <?php
+                                            $var1 = $donnees['actif'];
+                                            $var2 = "true";
+                                            if(strcmp($var1,$var2)==0)
+                                            {
+                                                ?>
+
+                                                    <INPUT type="checkbox" name="choix1" value="1"checked>
+
+                                                <?php
+                                            }
+                                            else
+                                            {
+                                                ?>
+
+                                                    <INPUT type="checkbox" name="choix1" value="1">
                                                 </form>
+                                                <?php
+                                            }
+
+                                            ?>
                                         </th>
-                                        <th>
-                                            <form>
-                                                <INPUT type="checkbox" name="choix1" value="1">
-                                            </form>
-                                        </th>
-                                    </tr>
-                                    <tr>
-                                        <th> Pierre </th>
-                                        <th> Paul </th>
-                                        <th>PP</th>
-                                        <th>
-                                            <form>
-                                                <INPUT type="checkbox" name="choix1" value="1">
-                                            </form>
-                                        </th>
-                                        <th>
-                                            <form>
-                                                <INPUT type="checkbox" name="choix1" value="1">
-                                            </form>
-                                        </th>
-                                    </tr>
+                                            </tr>
+                                        <?php
+                                        }
+                                        ?>
 
 
 
                                 </table>
-                            </div>
                         </div>
                     </div>
                     <!-- END SAMPLE TABLE PORTLET-->
@@ -154,6 +184,31 @@ License: You must have a valid license purchased only from themeforest(the above
     </div>
 </div>
 <!-- END FOOTER -->
+<script src="../assets/global/plugins/jquery.min.js" type="text/javascript"></script>
+<script src="../assets/global/plugins/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
+<script src="../assets/global/plugins/js.cookie.min.js" type="text/javascript"></script>
+<script src="../assets/global/plugins/bootstrap-hover-dropdown/bootstrap-hover-dropdown.min.js" type="text/javascript"></script>
+<script src="../assets/global/plugins/jquery-slimscroll/jquery.slimscroll.min.js" type="text/javascript"></script>
+<script src="../assets/global/plugins/jquery.blockui.min.js" type="text/javascript"></script>
+<script src="../assets/global/plugins/uniform/jquery.uniform.min.js" type="text/javascript"></script>
+<script src="../assets/global/plugins/bootstrap-switch/js/bootstrap-switch.min.js" type="text/javascript"></script>
+<!-- END CORE PLUGINS -->
+<!-- BEGIN PAGE LEVEL PLUGINS -->
+<script src="../assets/global/scripts/datatable.js" type="text/javascript"></script>
+<script src="../assets/global/plugins/datatables/datatables.min.js" type="text/javascript"></script>
+<script src="../assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.js" type="text/javascript"></script>
+<!-- END PAGE LEVEL PLUGINS -->
+<!-- BEGIN THEME GLOBAL SCRIPTS -->
+<script src="../assets/global/scripts/app.min.js" type="text/javascript"></script>
+<!-- END THEME GLOBAL SCRIPTS -->
+<!-- BEGIN PAGE LEVEL SCRIPTS -->
+<script src="../assets/pages/scripts/table-datatables-managed.min.js" type="text/javascript"></script>
+<!-- END PAGE LEVEL SCRIPTS -->
+<!-- BEGIN THEME LAYOUT SCRIPTS -->
+<script src="../assets/layouts/layout2/scripts/layout.min.js" type="text/javascript"></script>
+<script src="../assets/layouts/layout2/scripts/demo.min.js" type="text/javascript"></script>
+<script src="../assets/layouts/global/scripts/quick-sidebar.min.js" type="text/javascript"></script>
+
 
 </body>
 

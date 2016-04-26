@@ -15,11 +15,12 @@ License: You must have a valid license purchased only from themeforest(the above
 <!--[if IE 9]> <html lang="en" class="ie9 no-js"> <![endif]-->
 <!--[if !IE]><!-->
 <html lang="en">
-<?php include "head.html"?>
+<?php include "head.html";
+include "connexion.php";?>
 <body class="page-header-fixed page-sidebar-closed-hide-logo page-container-bg-solid">
 <!-- BEGIN HEADER -->
 <!-- La nav bar -->
-<?php include "nav_bar.html"?>
+<?php include "nav_bar.php"?>
 
 <!-- END HEADER -->
 <!-- BEGIN HEADER & CONTENT DIVIDER -->
@@ -72,7 +73,7 @@ License: You must have a valid license purchased only from themeforest(the above
 
                         </div>
 
-                            <form>
+                            <form action="ajout_tache.php" method="post">
                                     <INPUT type="button" name="nom" value= "Ajouter une tâche">
                                 </form>
 
@@ -84,36 +85,36 @@ License: You must have a valid license purchased only from themeforest(the above
                                         <th>Nom de la tâche</th>
                                         <th>Description </th>
                                         <th>Responsable</th>
+                                        <th> Temps passé</th>
                                         <th></th>
                                     </tr>
                                     </thead>
-                                    <tr>
-                                        <th> Squellette erp </th>
-                                        <th> Mise en place du prototype </th>
-                                        <th> VR</th>
-                                        <th>
-                                            <form>
-                                                <INPUT type="button" name="nom" value= "Commentaire">
-                                                <INPUT type="button" name="nom" value= "Terminé">
+                                    <tbody>
+                                    <?php
+                                    $req = $bdd->prepare("Select taches.nom,taches.description,utilisateur.pseudo,taches.temps from taches,utilisateur where taches.id_Users=utilisateur.id_Users and id_Projet=:projet");
 
+                                    $req->bindValue(':projet',$_SESSION['id_Projets'],PDO::PARAM_INT);
+                                    $req->execute();
+                                    while ($donnee = $req->fetch())
+                                    {
+                                        ?>
+                                        <tr>
+                                        <td><?php echo $donnee[0];?></td>
+                                        <td><?php echo $donnee[1];?></td>
+                                        <td> <?php echo $donnee[2];?></td>
+                                            <!-- Affichage heure minute -->
+                                        <td> <?php $tps= $donnee[3];
 
-                                            </form>
-                                        </th>
-                                    </tr>
-                                    <tr>
-                                        <th> Maquette erp </th>
-                                        <th> Mise en place des maquettes </th>
-                                        <th> VR</th>
-                                        <th>
-                                             <form>
-                                                <INPUT type="button" name="nom" value= "Commentaire">
-                                                <INPUT type="button" name="nom" value= "Terminé">
+                                            $tps2 = (int)($tps/60);
+                                            $tps3= $tps-$tps2*60;
+                                            echo  $tps2.'H'. $tps3.'minutes';
 
-
-                                            </form>
-                                        </th>
-                                    </tr>
-
+                                            ?></td></tr>
+                                    <?php
+                                    }
+                                    $req->closeCursor();
+                                    ?>
+                                    </tbody>
 
 
                                 </table>

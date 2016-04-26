@@ -20,7 +20,7 @@ include "connexion.php"?>
 <body class="page-header-fixed page-sidebar-closed-hide-logo page-container-bg-solid">
 <!-- BEGIN HEADER -->
 <!-- La nav bar -->
-<?php include "nav_bar.html"?>
+<?php include "nav_bar.php"?>
 
 <!-- END HEADER -->
 <!-- BEGIN HEADER & CONTENT DIVIDER -->
@@ -64,7 +64,7 @@ include "connexion.php"?>
                     <div class="portlet light form-fit ">
                         <div class="portlet-title">
                             <div class="caption">
-                                <i class="icon-social-dribbble font-green"></i>
+                                <i class="icon-doc font-green"></i>
                                 <span class="caption-subject font-green bold uppercase">Ajouter un projet</span>
                             </div>
 
@@ -85,35 +85,36 @@ include "connexion.php"?>
                                             <input type=text list=client name="client" >
                                             <datalist id=client >
                                                 <?php
-                                                $rep = $bdd-> query("Select * from contact");
+                                                $rep = $bdd-> query("Select * from entreprise");
                                                 while($donnees=$rep->fetch())
                                                 {
                                                 ?>
                                                 <option>
                                                     <?php echo $donnees['nom'];
                                                     }
+
                                                     $rep->closeCursor()
                                                     ?>
-                                            </datalist>
 
+
+                                            </datalist>
+                                            <a href="formulaire_client.php"><img alt="" class="img-circle" src="../assets/layouts/layout2/img/plus.png" />(Ajouter une entreprise)</a>
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <label class="control-label col-md-3">Production active</label>
                                         <div class="col-md-4">
-                                            <form>
-
                                                 <INPUT type="checkbox" id="active" name="active" value="active">(Production active en cours? )
-                                            </form>
+
 
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <label class="control-label col-md-3">Production en Régis</label>
                                         <div class="col-md-4">
-                                            <form>
+
                                                 <INPUT type="checkbox" id="regis" name="regis" value="regis">(Facturation à chaque fois qu'il y a une demande ?)
-                                            </form>
+
 
                                         </div>
                                     </div>
@@ -148,8 +149,8 @@ include "connexion.php"?>
                                 <div class="form-actions">
                                     <div class="row">
                                         <div class="col-md-offset-3 col-md-9">
-                                            <button type="submit" class="btn blue">
-                                                <i class="fa fa-check"></i> Enregistrer</button>
+                                            <button type="submit" class="btn purple">
+                                                <i class="fa fa-check"></i> Submit</button>
                                            <a href="Administration_projet.php"> <button type="button" class="btn default">Annuler</button></a>
                                         </div>
                                     </div>

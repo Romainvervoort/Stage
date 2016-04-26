@@ -15,11 +15,12 @@ License: You must have a valid license purchased only from themeforest(the above
 <!--[if IE 9]> <html lang="en" class="ie9 no-js"> <![endif]-->
 <!--[if !IE]><!-->
 <html lang="en">
-<?php include "head.html"?>
+<?php include "head.html";
+include "connexion.php"?>
 <body class="page-header-fixed page-sidebar-closed-hide-logo page-container-bg-solid">
 <!-- BEGIN HEADER -->
 <!-- La nav bar -->
-<?php include "nav_bar.html"?>
+<?php include "nav_bar.php"?>
 
 <!-- END HEADER -->
 <!-- BEGIN HEADER & CONTENT DIVIDER -->
@@ -56,62 +57,49 @@ License: You must have a valid license purchased only from themeforest(the above
             </div>
 
             <div class="row">
-
                 <div class="col-md-12">
-
-                    <!-- BEGIN SAMPLE TABLE PORTLET-->
                     <div class="portlet light ">
                         <div class="portlet-title">
-                            <div class="caption">
-
-                                <i class="icon-user font-green"></i>
-                                <span class="caption-subject font-green bold uppercase">Mes projets</span>
-
-
+                            <div class="caption font-dark">
+                                <span class="caption-subject bold uppercase">Liste des Archives</span>
+                                <a href ="Ajouter_projet.php"><input type="submit" value="Ajouter une archives"></a>
                             </div>
 
                         </div>
 
-                        <a href="Ajouter_projet.php"><input type="submit" value="Ajouter projet">
-                            </a>
-
                             <div class="portlet-body">
                                 <div class="table-scrollable">
-                                    <table class="table table-hover">
+                                    <table class="table table-striped table-bordered table-hover table-checkable order-column" id="sample_1">
                                         <thead>
                                         <tr>
                                             <th> Nom du projet</th>
                                             <th> Nom du client </th>
                                             <th>Régis</th>
                                             <th>Code du projet</th>
-                                            <th></th>
                                         </tr>
                                         </thead>
+                                        <tbody>
                                         <tr>
-                                            <th> ERP </th>
-                                            <th> Clerccom </th>
-                                            <th>
-                                                <form>
-                                                    <INPUT type="checkbox" name="choix1" value="1">
-                                                </form></th>
-                                            <th> 1100</th>
-                                            <th> <input type="submit" value="Mettre à jour"></th>
-                                        </tr>
-                                        <tr>
-                                            <th> ERP </th>
-                                            <th> Clerccom </th>
-                                            <th>
-                                                <form>
-                                                    <INPUT type="checkbox" name="choix1" value="1">
-                                                </form></th>
-                                            <th> 1120</th>
-                                            <th> <input type="submit" value="Mettre à jour"></th>
-                                        </tr>
+                                            <?php
+                                            $req = $bdd->prepare("Select projet.nom, entreprise.nom ,projet.production_regis, projet.id_Projets from projet,entreprise where projet.id_Entreprise=entreprise.id_Entreprise and projet.date_fin<>'' ");
+                                            $req->execute();
+                                            while($do= $req->fetch())
+                                            {
+                                                ?>
+                                            <td> <?php echo $do[0]?></td>
+                                            <td> <?php echo $do[1]?></td>
+                                            <td> <?php echo $do[2]?></td>
+                                            <td> <?php echo $do[3]?></td>
+                                                </tr>
+                                            <?php
+                                            }
+                                            $req->closeCursor();
+                                            ?>
 
-
-
+                                        </tbody>
                                     </table>
                                 </div>
+
                             </div>
                     </div>
                     <!-- END SAMPLE TABLE PORTLET-->
@@ -132,10 +120,7 @@ License: You must have a valid license purchased only from themeforest(the above
 
     <!-- END QUICK SIDEBAR -->
 </div>
-<!-- END CONTAINER -->
-<!-- Etape 3 : le containter -->
-<!-- Etape 4 : le footer -->
-<!-- BEGIN FOOTER -->
+
 <div class="page-footer">
     <div class="page-footer-inner"> 2015 &copy; Metronic by keenthemes.
         <a href="http://themeforest.net/item/metronic-responsive-admin-dashboard-template/4021469?ref=keenthemes" title="Purchase Metronic just for 27$ and get lifetime updates for free" target="_blank">Purchase Metronic!</a>
@@ -144,8 +129,30 @@ License: You must have a valid license purchased only from themeforest(the above
         <i class="icon-arrow-up"></i>
     </div>
 </div>
-<!-- END FOOTER -->
-
+<script src="../assets/global/plugins/jquery.min.js" type="text/javascript"></script>
+<script src="../assets/global/plugins/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
+<script src="../assets/global/plugins/js.cookie.min.js" type="text/javascript"></script>
+<script src="../assets/global/plugins/bootstrap-hover-dropdown/bootstrap-hover-dropdown.min.js" type="text/javascript"></script>
+<script src="../assets/global/plugins/jquery-slimscroll/jquery.slimscroll.min.js" type="text/javascript"></script>
+<script src="../assets/global/plugins/jquery.blockui.min.js" type="text/javascript"></script>
+<script src="../assets/global/plugins/uniform/jquery.uniform.min.js" type="text/javascript"></script>
+<script src="../assets/global/plugins/bootstrap-switch/js/bootstrap-switch.min.js" type="text/javascript"></script>
+<!-- END CORE PLUGINS -->
+<!-- BEGIN PAGE LEVEL PLUGINS -->
+<script src="../assets/global/scripts/datatable.js" type="text/javascript"></script>
+<script src="../assets/global/plugins/datatables/datatables.min.js" type="text/javascript"></script>
+<script src="../assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.js" type="text/javascript"></script>
+<!-- END PAGE LEVEL PLUGINS -->
+<!-- BEGIN THEME GLOBAL SCRIPTS -->
+<script src="../assets/global/scripts/app.min.js" type="text/javascript"></script>
+<!-- END THEME GLOBAL SCRIPTS -->
+<!-- BEGIN PAGE LEVEL SCRIPTS -->
+<script src="../assets/pages/scripts/table-datatables-managed.min.js" type="text/javascript"></script>
+<!-- END PAGE LEVEL SCRIPTS -->
+<!-- BEGIN THEME LAYOUT SCRIPTS -->
+<script src="../assets/layouts/layout2/scripts/layout.min.js" type="text/javascript"></script>
+<script src="../assets/layouts/layout2/scripts/demo.min.js" type="text/javascript"></script>
+<script src="../assets/layouts/global/scripts/quick-sidebar.min.js" type="text/javascript"></script>
 </body>
 
 </html>

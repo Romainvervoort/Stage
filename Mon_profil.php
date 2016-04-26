@@ -19,7 +19,8 @@ License: You must have a valid license purchased only from themeforest(the above
 <body class="page-header-fixed page-sidebar-closed-hide-logo page-container-bg-solid">
 <!-- BEGIN HEADER -->
 <!-- La nav bar -->
-<?php include "nav_bar.html"?>
+<?php include "nav_bar.php";
+?>
 
 <!-- END HEADER -->
 <!-- BEGIN HEADER & CONTENT DIVIDER -->
@@ -71,19 +72,19 @@ License: You must have a valid license purchased only from themeforest(the above
                                     <thead>
                                     <tr>
                                         <th> Prénom </th>
-                                        <th> Romain </th>
+                                        <th> <?php echo $_SESSION['prenom']?> </th>
                                     </tr>
                                     <tr>
                                         <th> Nom </th>
-                                        <th> Vervoort </th>
+                                        <th> <?php echo $_SESSION['nom'] ?></th>
                                     </tr>
                                     <tr>
                                         <th> Mot de passe  </th>
-                                        <th> **** </th>
+                                        <th> <?php echo MD5($_SESSION['mdp'])?> </th>
                                     </tr>
                                     <tr>
                                         <th> Adresse mail</th>
-                                        <th> romain.vervoort@sfr.fr </th>
+                                        <th> <?php echo $_SESSION["mail"];?> </th>
                                     </tr>
                                     </thead>
 
