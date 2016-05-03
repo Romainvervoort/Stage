@@ -3,6 +3,7 @@ include "connexion.php";
 session_start();
 if (isset ($_POST['nom']))
 {
+    echo ($_POST['nom']);
   /* Verification de la case coché */
     if(isset($_POST['actif']))
     {
@@ -63,7 +64,7 @@ if (isset ($_POST['nom']))
     $insert->bindValue(':res_actif',$res_actif,PDO::PARAM_STR);
     $insert->bindValue(':pseudo',$pseudo,PDO::PARAM_STR);
     $insert->execute();
-    header('Location: ../admin_2/ajout_employe.php');
+     header('Location: ../admin_2/ajout_employe.php');
 
 }
 else

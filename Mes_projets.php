@@ -49,7 +49,7 @@ include "connexion.php"?>
                     </ul>
                 </div>
 
-            <!-- Dans une class row il y a 2 div -->
+
 
             <div class="row">
                 <div class="col-md-12">
@@ -153,18 +153,13 @@ include "connexion.php"?>
     </a>
 
     <!-- END QUICK SIDEBAR -->
-</div>
+    </div>
 <!-- END CONTAINER -->
 <!-- Etape 3 : le containter -->
 <!-- Etape 4 : le footer -->
 <!-- BEGIN FOOTER -->
 <div class="page-footer">
-    <div class="page-footer-inner"> 2015 &copy; Metronic by keenthemes.
-        <a href="http://themeforest.net/item/metronic-responsive-admin-dashboard-template/4021469?ref=keenthemes" title="Purchase Metronic just for 27$ and get lifetime updates for free" target="_blank">Purchase Metronic!</a>
-    </div>
-    <div class="scroll-to-top">
-        <i class="icon-arrow-up"></i>
-    </div>
+
 </div>
 
 <script src="../assets/global/plugins/jquery.min.js" type="text/javascript"></script>

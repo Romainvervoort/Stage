@@ -49,12 +49,12 @@ License: You must have a valid license purchased only from themeforest(the above
                         <i class="fa fa-angle-right"></i>
                     </li>
                     <li>
-                        <a href="liste_employe.php">Liste des employés</a>
+                        <a href="les_taches.php">Liste des tâches </a>
                         <i class="fa fa-angle-right"></i>
                     </li>
                     <li>
-                        <span>Ajouter un employé</span>
-                        </li>
+                        <span>Ajouter une tâche</span>
+                    </li>
 
                 </ul>
             </div>
@@ -66,22 +66,21 @@ License: You must have a valid license purchased only from themeforest(the above
                         <div class="portlet-title">
                             <div class="caption">
                                 <i class="icon-social-dribbble font-green"></i>
-                                <span class="caption-subject font-green bold uppercase">Ajouter un employé</span>
+                                <span class="caption-subject font-green bold uppercase">Ajouter une tâche</span>
                             </div>
 
                         </div>
                         <div class="portlet-body form">
                             <!-- Début du Formulaire-->
 
-
-                            <form action="add_employe.php" id="form_sample_2" class="form-horizontal" method="post">
+                            <form action="add_tache.php" id="form_sample_2" class="form-horizontal" method="post">
                                 <div class="form-body">
                                     <div class="alert alert-danger display-hide">
                                         <button class="close" data-close="alert"></button> You have some form errors. Please check below. </div>
                                     <div class="alert alert-success display-hide">
                                         <button class="close" data-close="alert"></button> Your form validation is successful! </div>
                                     <div class="form-group">
-                                        <label class="control-label col-md-3">Nom
+                                        <label class="control-label col-md-3">Nom de la tâche
                                             <span class="required"> * </span> </label>
                                         <div class="col-md-4">
                                             <input class="form-control"  id="nom" name="nom" type="text" required/>
@@ -91,80 +90,36 @@ License: You must have a valid license purchased only from themeforest(the above
 
                                     <div class="form-group">
                                         <label class="control-label col-md-3">
-                                            Prénom
-                                            <span class="required"> * </span>
+                                            Description
                                         </label>
                                         <div class="col-md-4">
 
-                                            <input class="form-control" id="prenom"   name="prenom" type="text"required />
+                                            <input class="form-control" id="description"   name="description" type="text" />
                                         </div>
                                     </div>
 
 
                                     <div class="form-group">
-                                        <label class="control-label col-md-3">Pseudo
+                                        <label class="control-label col-md-3">Affectation
                                             <span class="required"> * </span></label>
                                         <div class="col-md-4">
-                                            <input class="form-control" id="pseudo" name="pseudo" type="text" required/>
+                                            <input type=text list=responsable name="responsable" required >
+                                            <datalist id=responsable >
+                                                <?php
+                                                $rep = $bdd-> prepare("Select utilisateur.pseudo from utilisateur,groupe_projet where groupe_projet.id_Users=utilisateur.id_Users and groupe_projet.id_projet=:idpro");
+                                                $rep->bindValue(':idpro',$_SESSION['id_Projets'],PDO::PARAM_INT);
+                                                $rep->execute();
+                                                while($donnees=$rep->fetch())
+                                                {
+                                                ?>
+                                                <option>
+                                                    <?php echo $donnees['pseudo'];
+                                                    }
+                                                    $rep->closeCursor()
+                                                    ?>
+                                            </datalist>
                                         </div>
                                     </div>
-                                    <div class="form-group">
-                                        <label class="control-label col-md-3">Numero de telephone</label>
-                                        <div class="col-md-4">
-                                            <input class="form-control" id="num" name="num" type="text" />
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="control-label col-md-3">Adresse mail</label>
-                                        <div class="col-md-4">
-                                            <input class="form-control" id="mail" name="mail" type="text" />
-                                        </div>
-                                    </div>
-
-
-                                    <div class="form-group">
-                                        <label class="control-label col-md-3">Mot de passe
-                                            <span class="required"> * </span></label>
-                                        <div class="col-md-4">
-                                            <input class="form-control" id="mdp" name="mdp" type="password" required />
-                                        </div>
-                                    </div>
-
-
-                                    <div class="form-group">
-                                        <label class="control-label col-md-3">Coût à l'heure</label>
-                                        <div class="col-md-4">
-                                            <input class="form-control" id="cout" name="cout" type="text" />
-                                        </div>
-                                    </div>
-
-
-                                    <div class="form-group">
-                                        <label class="control-label col-md-3">Administrateur</label>
-                                        <div class="col-md-4">
-                                                <INPUT type="checkbox" name="administrateur" id="administrateur" value="administrateur">
-                                        </div>
-                                    </div>
-
-
-                                    <div class="form-group">
-                                        <label class="control-label col-md-3">Fixe intérim</label>
-                                        <div class="col-md-4">
-
-                                                <INPUT type="checkbox" name="fixe" id="fixe" value="fixe">(Fixe)
-                                                <INPUT type="checkbox" name="interim" id="interim" value="interim">(Intérim)
-
-                                        </div>
-                                    </div>
-
-
-                                    <div class="form-group">
-                                        <label class="control-label col-md-3">Employé actif</label>
-                                        <div class="col-md-4">
-
-
-                                                <INPUT type="checkbox" name="actif" id ="actif" value="actif">
-                                        </div>
                                     </div>
                                 </div>
 

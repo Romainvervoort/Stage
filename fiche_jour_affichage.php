@@ -102,7 +102,7 @@ include "connexion.php"?>
                                     <tbody>
 
                                         <?php
-                                        $req2= $bdd->prepare("Select * from taches where id_Users=:id_Users and date_taches=:dates");
+                                        $req2= $bdd->prepare("Select taches.nom2,projet.nom,entreprise.nom as nomcli, taches.description, taches.temps from taches,projet,entreprise where taches.id_Projet=projet.id_Projets and entreprise.id_Entreprise=projet.id_Entreprise and taches.id_Users=:id_Users and date_taches=:dates");
                                         $req2->bindValue(':id_Users',$id_Users,PDO::PARAM_INT);
                                         $req2->bindValue(':dates',$date,PDO::PARAM_STR);
                                         $req2->execute();
@@ -123,39 +123,16 @@ include "connexion.php"?>
                                             {
                                                 while($don=$req2->fetch())
                                                 {
+
                                                 ?>
                                                     <tr class="odd gradeX">
                                                         <td></td>
-                                                    <?php
-                                                    $req3 = $bdd->prepare("Select * from projet where id_Projets=:id_projets");
-                                                    $req3 -> bindValue(':id_projets',$don['id_Projet'],PDO::PARAM_INT);
-                                                    $req3 ->execute();
-                                                    while ($donpro=$req3->fetch())
-                                                    {
-                                                        ?>
-                                                        <td><?php echo $donpro['nom'];?></td>
-                                                        <?php
-                                                        $id = $donpro['id_Entreprise'];
-                                                    }
-                                                    $req3->closeCursor();
-                                                    ?>
-                                                    <?php
-                                              $req4 = $bdd->prepare("Select * from Entreprise where id_Entreprise=:id_entreprise");
-                                                    $req4->bindValue(':id_entreprise',$id,PDO::PARAM_INT);
-                                                    $req4->execute();
-                                                    while($donne= $req4->fetch())
-                                                    {
-                                                        ?>
-                                                        <td><?php echo $donne['nom'];?></td>
-                                                        <?php
-                                                    }
-                                                    $req4->closeCursor();
-
-                                                        ?>
-                                                        <td><?php echo $don['nom'];?></td>
+                                                        <th><?php echo $don['nom']; ?></th>
+                                                        <th><?php echo $don['nomcli']?></th>
+                                                        <td><?php echo $don['nom2'];?></td>
                                                         <td><?php echo $don['description'];?></td>
                                                         <td> <?php $temps= $don['temps'];
-                                                            echo (int)($temps/60).'Heures'.($temps-((int)($temps/60))*60).'Minutes';
+                                                            echo (int)($temps/60).' H '.($temps-((int)($temps/60))*60).' min ';
                                                         $cpt=$cpt+$don['temps'];?></td>
                                                     </tr>
 
@@ -175,7 +152,7 @@ include "connexion.php"?>
                         if(strcmp($var,$var2)==0)
                         {
                         ?>
-                        <h1><center><?php echo (int)($cpt/60).'Heures'.($cpt-((int)($cpt/60)*60)).'Minutes';?> Semaine : <?php echo date('W', mktime(0, 0, 0, $_POST['mois'], $i, $_POST['annee']))?></center></h1>
+                        <h1><center><?php echo (int)($cpt/60).' H '.($cpt-((int)($cpt/60)*60)).' min ';?> Semaine : <?php echo date('W', mktime(0, 0, 0, $_POST['mois'], $i, $_POST['annee']))?></center></h1>
                         <?php
                         $cpt=0;
                     }

@@ -17,7 +17,9 @@ License: You must have a valid license purchased only from themeforest(the above
 <!--[if !IE]><!-->
 <html lang="en">
     <?php include "head.html"?>
+
     <body class="page-header-fixed page-sidebar-closed-hide-logo page-container-bg-solid">
+
         <!-- BEGIN HEADER -->
         <!-- La nav bar -->
         <?php include "nav_bar.php"?>
@@ -164,6 +166,10 @@ License: You must have a valid license purchased only from themeforest(the above
                                             <span class="caption-subject font-green bold uppercase">Mes horaires</span>
                                         </div>
                                     </div>
+                                  <center>  <form action="" method="post">
+                                        <input type="date" id="dates" name="dates" >
+                                        <input type="submit" value="Envoyer">
+                                    </form></center>
                                     <div class="portlet-body">
                                         <span class="caption-subject font-green bold uppercase">Mon planning</span>
                                         <div class="table-scrollable">
@@ -180,7 +186,6 @@ License: You must have a valid license purchased only from themeforest(the above
                                                     else
                                                     {
                                                     $dates=date("Y-m-d");
-
                                                     }
                                                     $_SESSION['dates']=$dates;
                                                     $heure= date('H:i'); ?>
@@ -191,7 +196,6 @@ License: You must have a valid license purchased only from themeforest(the above
                                                     <th>Retour midi</th>
                                                     <th>Depart</th>
                                                     <th> <?php echo "Horaire du : ". $dates ?></th>
-                                                    </form>
                                                     </tr>
                                                     <?php
 
@@ -296,6 +300,7 @@ License: You must have a valid license purchased only from themeforest(the above
                                             <table class="table table-hover">
                                                 <thead>
                                                 <tr>
+                                                    <th> Client</th>
                                                     <th> Projets</th>
                                                     <th> tâches </th>
                                                     <th> Description</th>
@@ -316,11 +321,29 @@ License: You must have a valid license purchased only from themeforest(the above
                                                {?>
                                                 <tr>
                                                     <td>
+
                                                         <form action="ventillation.php" method="post">
-                                                        <input type=text list=Projets name="Projets" >
-                                                        <datalist id=Projets >
+                                                    <input type=text list=client name="client" >
+                                                        <datalist id=client name="client" onChange="Lien()" >
                                                             <?php
-                                                            $rep = $bdd-> query("Select * from projet LIMIT 15");
+                                                            $rep = $bdd-> query("Select * from entreprise ");
+                                                            while($donnees=$rep->fetch())
+                                                            {
+                                                            ?>
+                                                            <option>
+                                                                <?php echo $donnees['nom'];
+                                                                }
+                                                                $rep->closeCursor()
+                                                                ?>
+                                                        </datalist>
+                                                    </td></td>
+                                                            <td>
+                                                        <input type=text list=Projets name="Projets" >
+                                                        <datalist id=Projets name="proj" onChange="Lien()" >
+                                                            <?php
+                                                            $rep = $bdd-> prepare("Select * from projet where id_Entreprise=:entreprise");
+                                                            $rep->bindValue(':entreprise',$ent,PDO::PARAM_INT);
+                                                            $rep->execute();
                                                             while($donnees=$rep->fetch())
                                                             {
                                                             ?>
@@ -334,9 +357,11 @@ License: You must have a valid license purchased only from themeforest(the above
                                                     <td>
                                                         <input type=text list=taches name="taches" >
                                                         <datalist id=taches >
+                                                            <option> </option>
                                                             <?php
-                                                            $rep = $bdd-> prepare("Select * from taches where id_Projet=1520 and id_Users=:id");
+                                                            $rep = $bdd-> prepare("Select * from taches where id_Projet=:projet and id_Users=:id");
                                                             $rep->bindValue(':id',$_SESSION['id'],PDO::PARAM_INT);
+                                                            $rep->bindValue(':projet',$pro,PDO::PARAM_INT);
                                                             $rep->execute();
                                                             while($donnees=$rep->fetch())
                                                             {
@@ -389,7 +414,7 @@ License: You must have a valid license purchased only from themeforest(the above
 
 
                                                 <input type=text list=Projets name="Projets" >
-                                                <datalist id=Projets >
+                                                <datalist id=Projets name="proj" onChange="Lien()">
                                                     <?php
                                                     $rep = $bdd-> query("Select * from projet LIMIT 15");
                                                     while($donnees=$rep->fetch())
@@ -523,12 +548,7 @@ License: You must have a valid license purchased only from themeforest(the above
 
 
         <!-- END THEME LAYOUT SCRIPTS -->
-            <script>
-                var $boutton = $('h1#test')
-                $boutton.on('click',function(event){
 
-                });
-                </script>
     </body>
 
 </html>

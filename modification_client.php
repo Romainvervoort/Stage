@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 
 
@@ -64,8 +63,9 @@ if(isset($_GET['id']))
                         <div class="portlet-body">
                             <div class="table-scrollable">
                                 <table class="table table-hover">
-                                    <thead>
                                     <form action="modif.php" method="post">
+                                    <thead>
+
                                         <tr>
                                         <?php $req= $bdd->prepare("Select * from entreprise where id_Entreprise=:id");
                                         $req->bindValue(':id',$id,PDO::PARAM_INT);
@@ -90,12 +90,46 @@ if(isset($_GET['id']))
                                         </tr>
                                         <tr>
                                         <th> Numéro de téléphone</th>
-                                        <th> <input type="text" name="num" value="<?php echo $donne["numero_telephone"];?>" </th>
+                                        <th> <input type="text" name="num" value="<?php echo $donne["numero_telephone"];?> " </th>
                                         </tr>
+                                        <tr>
+                                            <th> Ajouter un contact </th>
+                                            <th> <input type=text list=contact name="contact" >
+                                            <datalist id="contact" name="proj" >
+                                                <?php
+                                                $rep = $bdd-> query("Select nom from contact where id_Entreprise='0'");
+                                                while($donnees=$rep->fetch())
+                                                {
+                                                ?>
+                                                <option>
+                                                    <?php echo $donnees['nom'];
+                                                    }
+                                                    $rep->closeCursor()
+                                                    ?>
+                                            </datalist> </th>
+
                                         <?php
                                         }
                                         $req->closeCursor();
                                         ?>
+                                        </tr>
+                                        <th> Les contact</th>
+                                        <th>
+                                        <?php
+                                        $req= $bdd->prepare("Select nom, id_Contact from contact where id_Entreprise=:id");
+                                        $req->bindValue(':id',$id,PDO::PARAM_INT);
+                                        $req->execute();
+                                        while($don=$req->fetch())
+                                        {
+                                        echo '<a href="modification_contact.php?id='.$don['id_Contact'].'">';echo $don['nom']; ?></a>
+                                            <?php
+
+                                        }
+                                        $req->closeCursor();
+                                        ?>
+
+                                            </th>
+                                        </tr>
                                     </thead>
 
 

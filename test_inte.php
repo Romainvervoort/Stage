@@ -24,64 +24,136 @@ License: You must have a valid license purchased only from themeforest(the above
  */
 include "connexion.php";
 session_start();
-?>
-<body>
-<script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
-<!--
-<form method="post" action="test2.php" >
-    <div id="champs" >
-        <input type="text" name="titre[]" />
-        <input type="text" name="contenu[]" />
-        <input type="text" name="description[]" />
-        </br>
-        </br>
-    </div>
 
-        <script type="text/javascript" >
-            var div = document.getElementById('champs');
-            function addInput(nam){
-                var input = document.createElement("input");
-                input.name = name;
-                div.appendChild(input);
-            }
-            function addField() {
-                addInput("titre[]");
-                addInput("contenu[]");
-                addInput("description[]");
-                div.appendChild(document.createElement("br"));
-                div.appendChild(document.createElement("br"));
-            }
-        </script>
-    <button type="button" onclick="addField()" >+</button>
-    <input type="submit" />
-</form>
--->
-<input type=text list=Projets name="Projets" >
-<datalist id=Projets >
-    <option>1</option>
-    <option>2</option>
-    <option>3</option>
-    <option>4</option>
-    <option>5</option>
-    <option>6</option>
-    </datalist>
-<p id="3"> Coucou</p>
-<button onclick="myFunction()">Try it</button>
-</body>
-<script src="../admin_2/assets/js/popup.js" type="text/javascript"></script>
-<script>
-    $(function()
+?>
+<head>
+
+</head>
+<body>
+<input type="text" list="Projets" name="Projets" id='Proj' >
+<datalist id="Projets" name="proj">
+
+    <?php
+    $rep = $bdd-> query("Select * from projet LIMIT 15");
+    while($donnees=$rep->fetch())
     {
-    var $list;
-    $list = $('p');
-    $list.on('click',  function() {
-     $id= this.id
-        popup = window.open('modification_client.php?id='+$id, 'popup', 'height=600, width=500');
-    });
+    ?>
+    <option value ="<?php echo $donnees['nom'];?>"></option>
+    <?php
+        }
+        $rep->closeCursor()
+        ?>
+    </select>
+</datalist>
+<script>
+    /*  var query=document.querySelector('#Projets option'),
+     queryall=document.querySelectorAll('#Projets option');
+     var test =queryall[1].innerHTML;
+     alert(test);*/
+    var list = document.getElementById('Proj');
+
+    list.addEventListener('change', function() {
+
+        // On affiche le contenu de l'élément <option> ciblé par la propriété selectedIndex
+
+        alert(document.getElementById('Proj').value);
+        var test =document.getElementById('Proj').value;
+        $.ajax({
+            type: 'POST',
+            url: 'test_inte.php',
+            data: {pro:test},
+            success: function(data){alert("send ok")}
+        });
+
+        /* if(list.options[list.selectedIndex].innerHTML == 'test') {
+         $("div#test3").show();
+         }
+         var str= list.options[list.selectedIndex].innerHTML;
+         var x = document.createElement("INPUT");
+         x.setAttribute("list", "client");
+         x.setAttribute("name","client");
+         document.getElementById("myForm").appendChild(x);
+        <?php //$req=$bdd->prepare("Select * from utilisateur");
+    //$req->execute();
+    //while($don=$req->fetch())
+       // {
+       // ?>
+         var y = document.createElement("DATALIST");
+         y.setAttribute("id", "client");
+         y.setAttribute("name","client");
+         document.getElementById("myForm").appendChild(y);
+
+         var z = document.createElement("OPTION");
+         z.setAttribute("value", "<?php// echo $don['pseudo'] ?>");
+         document.getElementById("client").appendChild(z);
+
+        <?php
+       // }
+    //$req->closeCursor();
+
+    ?>
+         */
     });
 </script>
+<?php
+if(isset($_POST['pro']))
+{
+    $_POST['pro'];
+}
+?>
+<input type="text" list="Proje" name="Proje" id='Proje' >
+<datalist id="Proje" name="proje">
+
+    <?php
+    $rep = $bdd-> prepare("Select taches.nom from projet,taches where taches.id_Projet=projet.id_Projets where projet.nom=:pro");
+    $rep->bindValue(':pro',$_POST['pro'],PDO::PARAM_STR);
+    while($donnees=$rep->fetch())
+    {
+        ?>
+        <option value ="<?php echo $donnees['nom'];?>"></option>
+        <?php
+    }
+    $rep->closeCursor()
+    ?>
+    </select>
+</datalist>
+
+<select id="projets">
+<option>test</option>
+    <?php
+    $rep = $bdd-> query("Select * from projet LIMIT 15");
+    while($donnees=$rep->fetch())
+    {
+    ?>
+    <option>
+        <?php echo $donnees['nom'];?>
+        </option>
+
+    <?php
+
+        }
+        $rep->closeCursor()
+        ?>
+</select>
+
+<div id="test3" style="display:none">
+    <p>izajdiozadjoizad</p>
+    <p>jzadçzajdçzajd</p>
+</div>
+<p id="test" style="display: none">Hello  2</p>
+<p id="test2" style="display: none">Hello azeazeeaze 2</p>
+<p id="pro"> Coucou</p>
+</body>
+<script src="../admin_2/assets/js/popup.js" type="text/javascript"></script>
+
 
 <script src="https://code.jquery.com/jquery-1.12.3.js" integrity="sha256-1XMpEtA4eKXNNpXcJ1pmMPs8JV+nwLdEqwiJeCQEkyc=" crossorigin="anonymous"></script>
+
+
+
+
+
+
 
 
 </html>

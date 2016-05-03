@@ -74,7 +74,7 @@ include "connexion.php";?>
                         </div>
 
                             <form action="ajout_tache.php" method="post">
-                                    <INPUT type="button" name="nom" value= "Ajouter une tâche">
+                                    <INPUT type="submit" name="nom" value= "Ajouter une tâche">
                                 </form>
 
                         <div class="portlet-body">
@@ -107,7 +107,7 @@ include "connexion.php";?>
 
                                             $tps2 = (int)($tps/60);
                                             $tps3= $tps-$tps2*60;
-                                            echo  $tps2.'H'. $tps3.'minutes';
+                                            echo  $tps2.' H '. $tps3.' min';
 
                                             ?></td></tr>
                                     <?php

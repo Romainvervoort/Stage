@@ -7,7 +7,21 @@ if(isset($_POST['nom'])) {
     $num = $_POST['num'];
     $fax = $_POST['fax'];
     $mail = $_POST['mail'];
-    $pro = $_POST['Projets'];
+    $pro = $_POST['entreprise'];
+    if(strcmp($pro,'')==0)
+    {
+        $insert = $bdd->prepare("Insert into contact(nom,prenom,mail,fax,numero)values(:nom,:prenom,:mail,:fax,:num)");
+        $insert->bindValue(':nom', $nom, PDO::PARAM_STR);
+        $insert->bindValue(':prenom',$prenom,PDO::PARAM_STR);
+        $insert->bindValue(':mail', $mail, PDO::PARAM_STR);
+        $insert->bindValue(':fax', $fax, PDO::PARAM_STR);
+        $insert->bindValue(':num', $num, PDO::PARAM_STR);
+       $insert->execute();
+        header('Location: ../admin_2/formulaire_client.php');
+    }
+    else
+    {
+
 
     $rep = $bdd->prepare("Select * from entreprise where nom=:pro");
     $rep->bindValue(':pro', $pro, PDO::PARAM_STR);
@@ -25,7 +39,8 @@ if(isset($_POST['nom'])) {
 
     }
     $rep->closeCursor();
-    header('Location: ../admin_2/formulaire_client.php');
+    }
+  header('Location: ../admin_2/formulaire_client.php');
 }
 else
 {

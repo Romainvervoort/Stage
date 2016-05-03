@@ -93,9 +93,9 @@ include "connexion.php"?>
                                         $req->execute();
                                         while($donnees= $req->fetch()){
                                             ?>
-                                        <th><?php echo $donnees['Nom'];?></th>
+                                        <th><?php echo '<a href="modification_employe.php?id=' . $donnees['id_Users'] . '">';echo  $donnees['Nom']?></a></th>
                                         <th><?php echo $donnees['Prenom'];?></th>
-                                        <th><?php echo $donnees['pseudo'];?></th>
+                                        <th><?php echo '<a href="modification_employe.php?id=' . $donnees['id_Users'] . '">';echo  $donnees['pseudo']?></a></th>
                                         <th>
                                             <?php
                                             $var1 = $donnees['administrateur'];

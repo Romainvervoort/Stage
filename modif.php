@@ -10,7 +10,11 @@ if(isset($_POST['Modifier'])) {
     $req->bindValue(':mail', $_POST['mail'], PDO::PARAM_STR);
     $req->bindValue(':num', $_POST['num'], PDO::PARAM_STR);
     $req->bindValue(':id', $_SESSION['id_entreprise'], PDO::PARAM_INT);
-   $req->execute();
+    $req->execute();
+    $req=$bdd->prepare("Update contact set id_Entreprise=:id where nom=:nom");
+    $req->bindValue(':id', $_SESSION['id_entreprise'], PDO::PARAM_INT);
+    $req->bindValue(':nom',$_POST['contact'], PDO::PARAM_INT);
+    $req->execute();
 }
 else
 {

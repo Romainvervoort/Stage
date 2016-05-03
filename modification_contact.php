@@ -61,7 +61,7 @@ if(isset($_GET['id']))
                                     <thead>
                                     <form action="modif.php" method="post">
                                         <tr>
-                                            <?php $req= $bdd->prepare("Select * from contact where id_Contact=:id");
+                                            <?php $req= $bdd->prepare("Select contact.nom, contact.prenom,contact.mail,contact.numero, entreprise.nom as nom2 from contact,entreprise where id_Contact=:id and contact.id_Entreprise=entreprise.id_Entreprise;");
                                             $req->bindValue(':id',$id,PDO::PARAM_INT);
                                             $req->execute();
                                             while($donne=$req->fetch())
@@ -76,16 +76,9 @@ if(isset($_GET['id']))
                                         </tr>
                                         <tr>
                                             <th>Entreprise  </th>
-                                            <th><?php
-                                                $req2=$bdd->prepare("Select nom from entreprise where id_Entreprise=:id");
-                                                $req2->bindValue(':id',$donne['id_Entreprise'],PDO::PARAM_INT);
-                                                $req2->execute();
-                                                while($do=$req2->fetch())
-                                                {
-                                                    echo $do['nom'];
-                                                }
-                                                $req2->closeCursor();
-                                                ?></th>
+                                            <th>
+                                                   <?php echo $donne['nom2'];?>
+                                               </th>
                                         </tr>
                                         <tr>
                                             <th> Adresse mail</th>
@@ -99,6 +92,20 @@ if(isset($_GET['id']))
                                         }
                                         $req->closeCursor();
                                         ?>
+                                        <tr>
+                                            <th> Les Projets</th>
+                                            <th>
+                                                <?php
+                                        $req=$bdd->prepare("Select nom,id_Projets from projet where id_Contact=:id");
+                                        $req->bindValue(':id',$id,PDO::PARAM_INT);
+                                        $req->execute();
+                                        while($donne = $req->fetch())
+                                        {
+                                            echo '<a href ="modification_projet.php?id='.$donne['id_Projets'].'">';echo $donne['nom'];
+                                        }
+                                        ?>
+                                        </th>
+                                        </tr>
                                     </thead>
 
 

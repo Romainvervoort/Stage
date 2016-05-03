@@ -76,13 +76,13 @@ include "connexion.php"?>
                                     <div class="form-group">
                                         <label class="control-label col-md-3">Nom du projet</label>
                                         <div class="col-md-4">
-                                            <input class="form-control" id="nom" name="nom" type="text" />
+                                            <input class="form-control" id="nom" name="nom" type="text" required/>
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <label class="control-label col-md-3">Client</label>
                                         <div class="col-md-4">
-                                            <input type=text list=client name="client" >
+                                            <input type=text list=client name="client"required >
                                             <datalist id=client >
                                                 <?php
                                                 $rep = $bdd-> query("Select * from entreprise");
@@ -102,29 +102,62 @@ include "connexion.php"?>
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label class="control-label col-md-3">Production active</label>
+                                        <label class="control-label col-md-3">Type de production</label>
                                         <div class="col-md-4">
-                                                <INPUT type="checkbox" id="active" name="active" value="active">(Production active en cours? )
+                                                <select id="Production" name="Production">
+                                                    <option>Choissisez le type de production</option>
+                                                        <option>Contractualisé avec Report</option>
+                                                    <option>Production Régis</option>
+                                                    <option>Contractualisé indépendante</option>
+                                                </select>
 
 
                                         </div>
                                     </div>
-                                    <div class="form-group">
-                                        <label class="control-label col-md-3">Production en Régis</label>
+                                    <div></div>
+                                    <div class="form-group" id="CR" style="display:none">
+                                        <label class="control-label col-md-3">Début du projet</label>
                                         <div class="col-md-4">
-
-                                                <INPUT type="checkbox" id="regis" name="regis" value="regis">(Facturation à chaque fois qu'il y a une demande ?)
-
-
+                                            <input class="form-control" id="dates" name="dates" type="date"/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group" id="CR" style="display:none">
+                                        <label class="control-label col-md-3">Type de fréquence</label>
+                                        <div class="col-md-4">
+                                            <select id="Frequence" name="frequence">
+                                                <option>Choissisez la Fréquence</option>
+                                                <option>Mensuel</option>
+                                                <option>Semestriel</option>
+                                                <option>Trimestriel</option>
+                                                <option>Annuel</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group" id="CI" style="display:none">
+                                        <label class="control-label col-md-3">Durée du contrat</label>
+                                        <div class="col-md-4">
+                                            <input class="form-control" id="dure" name="dure" type="text" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group" id="CR" style="display: none">
+                                        <label class="control-label col-md-3">Coût en heure</label>
+                                        <div class="col-md-4">
+                                            <input class="form-control" id="cout" name="cout" type="text" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group" id="CI" style="display: none">
+                                        <label class="control-label col-md-3">Coût en minute</label>
+                                        <div class="col-md-4">
+                                            <input class="form-control" id="minute" name="minute" type="text" />
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <label class="control-label col-md-3">Responsable du projet</label>
                                         <div class="col-md-4">
-                                            <input type=text list=responsable name="responsable" >
+                                            <input type=text list=responsable name="responsable" required >
                                             <datalist id=responsable >
                                                 <?php
-                                                $rep = $bdd-> query("Select * from utilisateur");
+                                                $rep = $bdd-> query("Select * from utilisateur where actif='true'");
                                                 while($donnees=$rep->fetch())
                                                 {
                                                 ?>
@@ -136,12 +169,7 @@ include "connexion.php"?>
                                             </datalist>
                                         </div>
                                     </div>
-                                    <div class="form-group">
-                                        <label class="control-label col-md-3">Coût en heure</label>
-                                        <div class="col-md-4">
-                                            <input class="form-control" id="cout" name="cout" type="text" />
-                                        </div>
-                                    </div>
+
 
 
 
@@ -189,6 +217,44 @@ include "connexion.php"?>
     </div>
 </div>
 <!-- END FOOTER -->
+<script src="../admin_2/assets/js/popup.js" type="text/javascript"></script>
+
+
+<script src="https://code.jquery.com/jquery-1.12.3.js" integrity="sha256-1XMpEtA4eKXNNpXcJ1pmMPs8JV+nwLdEqwiJeCQEkyc=" crossorigin="anonymous"></script>
+<script>
+    var list = document.getElementById('Production');
+
+    list.addEventListener('change', function() {
+        if(list.options[list.selectedIndex].innerHTML == 'Contractualisé avec Report') {
+            $("div#CR").show();
+            $("div#CI").hide();
+        }
+        else
+        {
+            if(list.options[list.selectedIndex].innerHTML == 'Production Régis')
+            {
+                $("div#CR").hide();
+                $("div#CI").hide();
+            }
+            else
+            {
+                if(list.options[list.selectedIndex].innerHTML == 'Contractualisé indépendante')
+                {
+                    $("div#CR").show();
+                    $("div#CI").show();
+                }
+                else
+                {
+                    $("div#CR").hide();
+                    $("div#CI").hide();
+                }
+            }
+
+        }
+
+
+    });
+</script>
 
 </body>
 

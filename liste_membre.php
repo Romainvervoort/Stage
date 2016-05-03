@@ -124,7 +124,7 @@ License: You must have a valid license purchased only from themeforest(the above
                                         <tr>
                                             <th><?php echo $donne['pseudo']; ?></th>
                                             <th ><?php echo $donne['mail']; ?></th>
-                                            <th><?php echo $donne['heure_prevu'].'Heures'; ?></th>
+                                            <th><?php echo $donne['heure_prevu'].' H'; ?></th>
                                             <th><?php echo '<a href="ajout_heure.php?id='. $donne['id_Users'] ?>" onclick="window.open(this.href, 'popup', 'height=200, width=200');return false">Ajouter des heures</a></th>
                                             </tr>
 

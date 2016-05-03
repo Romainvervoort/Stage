@@ -76,13 +76,13 @@ License: You must have a valid license purchased only from themeforest(the above
                                     <div class="form-group">
                                         <label class="control-label col-md-3">Nom de l'entreprise</label>
                                         <div class="col-md-4">
-                                            <input class="form-control" id="nom" name="nom" type="text" />
+                                            <input class="form-control" id="nom" name="nom" type="text" required/>
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <label class="control-label col-md-3">Adresse de l'entreprise</label>
                                         <div class="col-md-4">
-                                            <input class="form-control" id="adresse" name="adresse" type="text" />
+                                            <input class="form-control" id="adresse" name="adresse" type="text" required/>
                                             <span class="help-block"> Numéro et rue </span>
                                         </div>
                                     </div>
@@ -103,14 +103,14 @@ License: You must have a valid license purchased only from themeforest(the above
                                     <div class="form-group">
                                         <label class="control-label col-md-3">Numéro de téléphone</label>
                                         <div class="col-md-4">
-                                            <input class="form-control" name="num" id="num" type="text" />
+                                            <input class="form-control" name="num" id="num" type="text" required/>
                                             <span class="help-block"> 0300000000 </span>
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <label class="control-label col-md-3">Adresse mail</label>
                                         <div class="col-md-4">
-                                            <input class="form-control" name="mail" id="mail" type="text" />
+                                            <input class="form-control" name="mail" id="mail" type="text" required/>
                                             <span class="help-block"> test@test.com </span>
                                         </div>
                                     </div>
@@ -154,13 +154,13 @@ License: You must have a valid license purchased only from themeforest(the above
                                     <div class="form-group">
                                         <label class="control-label col-md-3">Nom </label>
                                         <div class="col-md-4">
-                                            <input class="form-control" id="nom" name="nom" type="text" />
+                                            <input class="form-control" id="nom" name="nom" type="text" required/>
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <label class="control-label col-md-3">Prénom </label>
                                         <div class="col-md-4">
-                                            <input class="form-control" id="prenom" name="prenom" type="text" />
+                                            <input class="form-control" id="prenom" name="prenom" type="text" required/>
                                         </div>
                                     </div>
                                     <div class="form-group">
@@ -171,10 +171,10 @@ License: You must have a valid license purchased only from themeforest(the above
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label class="control-label col-md-3">Nom de l'entreprise</label>
+                                        <label class="control-label col-md-3">Nom de l'entreprise </label>
                                         <div class="col-md-4">
-                                            <input type=text list=Projets name="Projets" >
-                                            <datalist id=Projets >
+                                            <input type=text list=entreprise name="entreprise" required>
+                                            <datalist id=entreprise >
                                                 <?php
                                                 $rep = $bdd-> query("Select * from entreprise");
                                                 while($donnees=$rep->fetch())

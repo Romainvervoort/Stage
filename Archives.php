@@ -62,7 +62,6 @@ include "connexion.php"?>
                         <div class="portlet-title">
                             <div class="caption font-dark">
                                 <span class="caption-subject bold uppercase">Liste des Archives</span>
-                                <a href ="Ajouter_projet.php"><input type="submit" value="Ajouter une archives"></a>
                             </div>
 
                         </div>
@@ -72,10 +71,12 @@ include "connexion.php"?>
                                     <table class="table table-striped table-bordered table-hover table-checkable order-column" id="sample_1">
                                         <thead>
                                         <tr>
+                                            <th></th>
                                             <th> Nom du projet</th>
                                             <th> Nom du client </th>
                                             <th>Régis</th>
                                             <th>Code du projet</th>
+                                            <th></th>
                                         </tr>
                                         </thead>
                                         <tbody>
@@ -86,10 +87,16 @@ include "connexion.php"?>
                                             while($do= $req->fetch())
                                             {
                                                 ?>
-                                            <td> <?php echo $do[0]?></td>
-                                            <td> <?php echo $do[1]?></td>
-                                            <td> <?php echo $do[2]?></td>
-                                            <td> <?php echo $do[3]?></td>
+                                            <th></th>
+                                            <th> <?php echo $do[0]?></th>
+                                            <th> <?php echo $do[1]?></th>
+                                            <th> <?php echo $do[2]?></th>
+                                            <th> <?php echo $do[3]?></th>
+                                            <form action="" method="post">
+                                                <input class="form-control" name="id" id="id" type="hidden" value="<?php echo $do['id_Projets']?>" />
+                                                <th><button id="MAJ" name="MAJ" class="btn green-sharp btn-large" data-toggle="confirmation" data-placement="top" data-btn-ok-label="Oui" data-btn-ok-icon="icon-like" data-btn-ok-class="btn-success" data-btn-cancel-label="Non!"
+                                                            data-btn-cancel-icon="icon-close" data-btn-cancel-class="btn-danger">Mettre à jour</button>
+                                                </th>
                                                 </tr>
                                             <?php
                                             }
@@ -98,6 +105,13 @@ include "connexion.php"?>
 
                                         </tbody>
                                     </table>
+                                    <?php
+                                    if(isset($_POST['id']))
+                                    {
+                                        $req= $bdd->prepare("Update projet set date_fin='' where id_Projets=:id");
+                                        $req->bindValue(':id',$_POST['id'],PDO::PARAM_INT);
+                                    }
+                                    ?>
                                 </div>
 
                             </div>
@@ -153,6 +167,7 @@ include "connexion.php"?>
 <script src="../assets/layouts/layout2/scripts/layout.min.js" type="text/javascript"></script>
 <script src="../assets/layouts/layout2/scripts/demo.min.js" type="text/javascript"></script>
 <script src="../assets/layouts/global/scripts/quick-sidebar.min.js" type="text/javascript"></script>
+<script src="../assets/global/plugins/bootstrap-confirmation/bootstrap-confirmation.min.js" type="text/javascript"></script>
 </body>
 
 </html>
