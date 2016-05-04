@@ -26,7 +26,7 @@ if(isset($_GET['id']))
 <!-- BEGIN CONTAINER -->
 <div class="page-container">
     <!-- Menu -->
-    <?php include "menu.html"?>
+    <?php include "menu.php"?>
     <div class="page-content-wrapper">
         <!-- BEGIN CONTENT BODY -->
         <div class="page-content">

@@ -56,6 +56,20 @@ else
                 $req->bindValue(':id',$_SESSION['id_tache'],PDO::PARAM_INT);
                 $req->execute();
             }
+            else
+            {
+                if(isset($_POST['Modifier5']))
+                {
+                    $req=$bdd->prepare("Update utilisateur set nom=:nom,Prenom=:prenom,mdp=:mdp,mail=:mail,telephone=:num where pseudo=:pseudo");
+                    $req->bindValue(':nom',$_POST['nom'],PDO::PARAM_STR);
+                    $req->bindValue(':prenom',$_POST['prenom'],PDO::PARAM_STR);
+                    $req->bindValue(':mdp',$_POST['mdp'],PDO::PARAM_STR);
+                    $req->bindValue(':mail',$_POST['mail'],PDO::PARAM_STR);
+                    $req->bindValue(':num',$_POST['num'],PDO::PARAM_INT);
+                    $req->bindValue(':pseudo',$_SESSION['pseudo'],PDO::PARAM_STR);
+                    $req->execute();
+                }
+            }
         }
     }
 }

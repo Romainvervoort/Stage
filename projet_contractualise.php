@@ -1,16 +1,5 @@
 <!DOCTYPE html>
-<!--
-Template Name: Metronic - Responsive Admin Dashboard Template build with Twitter Bootstrap 3.3.6
-Version: 4.5.5
-Author: KeenThemes
-Website: http://www.keenthemes.com/
-Contact: support@keenthemes.com
-Follow: www.twitter.com/keenthemes
-Dribbble: www.dribbble.com/keenthemes
-Like: www.facebook.com/keenthemes
-Purchase: http://themeforest.net/item/metronic-responsive-admin-dashboard-template/4021469?ref=keenthemes
-License: You must have a valid license purchased only from themeforest(the above link) in order to legally use the theme for your project.
--->
+
 <!--[if IE 8]> <html lang="en" class="ie8 no-js"> <![endif]-->
 <!--[if IE 9]> <html lang="en" class="ie9 no-js"> <![endif]-->
 <!--[if !IE]><!-->
@@ -50,7 +39,7 @@ include "connexion.php"?>
                         <i class="fa fa-angle-right"></i>
                     </li>
                     <li>
-                        <span>Les projets supprimé </span>
+                        <span>Les projets</span>
                     </li>
                     </li>
                 </ul>
@@ -66,7 +55,7 @@ include "connexion.php"?>
                             <div class="caption">
 
                                 <i class="icon-user font-green"></i>
-                                <span class="caption-subject font-green bold uppercase">Les projets supprimés</span>
+                                <span class="caption-subject font-green bold uppercase">Les projets Contractualisé</span>
 
 
                             </div>
@@ -79,82 +68,44 @@ include "connexion.php"?>
                                 <thead>
                                 <tr>
                                     <th></th>
-                                    <th> Nom du projet</th>
+                                    <th>Nom du projet</th>
                                     <th>Nom du client </th>
-                                    <th>Etat</th>
-                                    <th>Régis</th>
-                                    <th>Heure prévu</th>
-                                    <th>Heure effectué</th>
-                                    <th></th>
-                                    <th></th>
+                                    <th>Date de la fréquence </th>
+                                    <th>Difference (Heure prévue - heure passé)</th>
+                                    <th>Valeur de la fréquence (Temps prévu par Mois/Semestre/Trimestre/Année) </th>
                                 </tr>
                                 </thead>
                                 <tbody>
                                 <tr>
-                                    <?php
-                                    $req= $bdd->prepare("Select projet_supp.id_projet, projet_supp.nom,entreprise.nom as nom2, projet_supp.etat, projet_supp.production_regis,projet_supp.temps, projet_supp.temps_total from projet_supp,entreprise where entreprise.id_Entreprise= projet_supp.id_Entreprise");
-                                    $req->execute();
-                                    while($donne = $req->fetch())
-                                    {
-                                    ?>
-                                <tr>
-                                    <th></th>
-                                    <th><?php echo $donne['nom']; ?></th>
-                                    <th><?php echo $donne['nom2']; ?></th>
-                                    <th><?php echo $donne['etat']; ?></th>
-                                    <th><?php echo $donne['production_regis']; ?></th>
-                                    <th><?php echo $donne['temps']; ?></th>
-                                    <th><?php echo $donne['temps_total']; ?></th>
-                                    <form action="" method="post">
-                                        <input class="form-control" name="id" id="id" type="hidden" value="<?php echo $donne['id_projet']?>" />
-                                        <th><button id="Maj" name="Maj" class="btn green-sharp btn-large" data-toggle="confirmation" data-placement="top" data-btn-ok-label="Oui" data-btn-ok-icon="icon-like" data-btn-ok-class="btn-success" data-btn-cancel-label="Non!"
-                                                    data-btn-cancel-icon="icon-close" data-btn-cancel-class="btn-danger">Mettre à jour</button>
-                                        </th>
-                                      </form>
-                                </tr>
                                 <?php
+                                $dif=0;
+                                $req= $bdd->prepare("Select projet.nom as projet,entreprise.nom as entreprise,rapport_contractualise.date,rapport_contractualise.difference,projet.valeur_frequence from projet,entreprise,rapport_contractualise where rapport_contractualise.id_projets=projet.id_Projets and entreprise.id_Entreprise=projet.id_Entreprise");
+                                $req->execute();
+                                while($donne = $req->fetch())
+                                {
+                                   ?>
+                                    <th></th>
+                                    <th><?php echo $donne['projet'];?></th>
+                                    <th><?php echo $donne['entreprise'];?></th>
+                                    <th><?php echo $donne['date'];?></th>
+                                    <th><?php echo $donne['difference'];?></th>
+                                    <th><?php echo $donne['valeur_frequence'];?></th>
+                                    </tr>
+                                    <?php
+                                   $t= $donne['difference'];
+                                    $dif= $dif+$t;
                                 }
-
-
                                 ?>
+
+                                <tr>
+                                    Difference total  : <?php echo $dif ?>
+                                </tr>
                                 </tbody>
 
 
 
 
                             </table>
-                            <?php
-                            if(isset($_POST['id'])) {
-                                if (isset($_POST['Maj'])) {
-                                    $req=$bdd->prepare("Select * from projet_supp where id_projet=:projet");
-                                    $req->bindValue(':projet',$_POST['id'],PDO::PARAM_INT);
-                                    $req->execute();
-                                    while($don=$req->fetch())
-                                    {
-                                        $req2=$bdd->prepare("Insert into projet( id_Projets,id_Entreprise,id_Contact,id_Users,date_creation,date_fin,etat,nom,production_active,production_regis,temps,temps_total) values (:projet,:entreprise,:contact,:users,:crea,:fin,:etat,:nom,:active,:regis,:temps,:tempstt)");
-                                        $req2->bindValue(':projet',$don['id_projet'],PDO::PARAM_INT);
-                                        $req2->bindValue(':entreprise',$don['id_entreprise'],PDO::PARAM_INT);
-                                        $req2->bindValue(':contact',$don['id_Contact'],PDO::PARAM_INT);
-                                        $req2->bindValue(':users',$don['id_Users'],PDO::PARAM_INT);
-                                        $req2->bindValue(':crea',$don['date_creation'],PDO::PARAM_STR);
-                                        $req2->bindValue(':fin',$don['date_fin'],PDO::PARAM_STR);
-                                        $req2->bindValue(':etat',$don['etat'],PDO::PARAM_STR);
-                                        $req2->bindValue(':nom',$don['nom'],PDO::PARAM_STR);
-                                        $req2->bindValue(':active',$don['production_active'],PDO::PARAM_STR);
-                                        $req2->bindValue(':regis',$don['production_regis'],PDO::PARAM_STR);
-                                        $req2->bindValue(':temps',$don['temps'],PDO::PARAM_INT);
-                                        $req2->bindValue(':tempstt',$don['temps_total'],PDO::PARAM_INT);
-                                        $req2->execute();
-
-
-                                    }
-                                    $req->closeCursor();
-                                    // $req= $bdd->prepare("Delete from projet where id_Projets=:projet");
-                                    //    $req->bindValue(':projet',$_POST['id'],PDO::PARAM_INT);
-                                    //header('Location: ../admin_2/Administration_projet.php');
-                                }
-                            }
-                            ?>
                         </div>
 
                     </div>

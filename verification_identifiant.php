@@ -25,6 +25,7 @@ if(isset($_POST['password']))
         $_SESSION['prenom']=$donne['Prenom'];
         $_SESSION['mail']=$donne['mail'];
         $_SESSION['mdp']=$donne['mdp'];
+        $_SESSION['num']=$donne['num'];
         $req2 = $bdd->prepare("Update utilisateur set sid=:sid where id_Users=:user");
         $req2->bindValue(':sid',MD5($donne['mdp']),PDO::PARAM_STR);
         $req2->bindValue(':user',$donne['id_Users'],PDO::PARAM_INT);

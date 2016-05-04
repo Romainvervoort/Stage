@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+!DOCTYPE html>
 <!--
 Template Name: Metronic - Responsive Admin Dashboard Template build with Twitter Bootstrap 3.3.6
 Version: 4.5.5
@@ -66,14 +66,14 @@ License: You must have a valid license purchased only from themeforest(the above
                         <div class="portlet-title">
                             <div class="caption">
                                 <i class="icon-social-dribbble font-green"></i>
-                                <span class="caption-subject font-green bold uppercase">Ajouter une tâche</span>
+                                <span class="caption-subject font-green bold uppercase">Ajouter un bug</span>
                             </div>
 
                         </div>
                         <div class="portlet-body form">
                             <!-- Début du Formulaire-->
 
-                            <form action="add_tache.php" id="form_sample_2" class="form-horizontal" method="post">
+                            <form action="add_bug.php" id="form_sample_2" class="form-horizontal" method="post">
                                 <div class="form-body">
                                     <div class="alert alert-danger display-hide">
                                         <button class="close" data-close="alert"></button> You have some form errors. Please check below. </div>
@@ -97,20 +97,8 @@ License: You must have a valid license purchased only from themeforest(the above
                                             <input class="form-control" id="description"   name="description" type="text" />
                                         </div>
                                     </div>
-                                    <div class="form-group">
-                                        <label class="control-label col-md-3">
-                                            Type
-                                        </label>
-                                        <div class="col-md-4">
-                                            <select id="type" name="type" >
-                                                <option>Grahpisme</option>
-                                                <option>Développement</option>
-                                                <option>Client</option>
-                                                <option>Bug</option>
-                                            </select>
 
-                                        </div>
-                                    </div>
+
                                     <div class="form-group">
                                         <label class="control-label col-md-3">Affectation
                                             <span class="required"> * </span></label>
@@ -132,41 +120,41 @@ License: You must have a valid license purchased only from themeforest(the above
                                             </datalist>
                                         </div>
                                     </div>
-                                    </div>
                                 </div>
-
-
-                                <div class="form-actions">
-                                    <div class="row">
-                                        <div class="col-md-offset-3 col-md-9">
-                                            <button type="submit" class="btn blue">
-                                                <i class="fa fa-check"></i> Enregistrer</button>
-                                            <button type="button" class="btn default">Annuler</button>
-                                        </div>
-                                    </div>
-                                </div>
-
-                            </form>
-                            <!-- FIn du formulaire-->
-
                         </div>
+
+
+                        <div class="form-actions">
+                            <div class="row">
+                                <div class="col-md-offset-3 col-md-9">
+                                    <button type="submit" class="btn blue">
+                                        <i class="fa fa-check"></i> Enregistrer</button>
+                                    <button type="button" class="btn default">Annuler</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        </form>
+                        <!-- FIn du formulaire-->
+
                     </div>
                 </div>
             </div>
-
-            <!--Mes tâches -->
-
-
         </div>
-        <!-- END CONTENT BODY -->
-    </div>
-    <!-- END CONTENT -->
-    <!-- BEGIN QUICK SIDEBAR -->
-    <a href="javascript:;" class="page-quick-sidebar-toggler">
-        <i class="icon-login"></i>
-    </a>
 
-    <!-- END QUICK SIDEBAR -->
+        <!--Mes tâches -->
+
+
+    </div>
+    <!-- END CONTENT BODY -->
+</div>
+<!-- END CONTENT -->
+<!-- BEGIN QUICK SIDEBAR -->
+<a href="javascript:;" class="page-quick-sidebar-toggler">
+    <i class="icon-login"></i>
+</a>
+
+<!-- END QUICK SIDEBAR -->
 </div>
 <!-- END CONTAINER -->
 <!-- Etape 3 : le containter -->

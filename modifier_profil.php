@@ -8,11 +8,6 @@
 <?php include "connexion.php";
 include "head.html";
 include "nav_bar.php";
-if(isset($_GET['id']))
-{
-    $id= $_GET['id'];
-    $_SESSION['id_projet']=$id;
-};
 ?>
 <body class="page-header-fixed page-sidebar-closed-hide-logo page-container-bg-solid">
 <!-- BEGIN HEADER -->
@@ -57,7 +52,7 @@ if(isset($_GET['id']))
                         <div class="portlet-title">
                             <div class="caption">
                                 <i class="icon-user font-green"></i>
-                                <span class="caption-subject font-green bold uppercase">Projet</span>
+                                <span class="caption-subject font-green bold uppercase">Mon Profil</span>
                             </div>
                         </div>
                         <div class="portlet-body">
@@ -66,45 +61,37 @@ if(isset($_GET['id']))
                                     <thead>
                                     <form action="modif.php" method="post">
                                         <tr>
-                                            <?php $req= $bdd->prepare("Select * from projet where id_Projets=:id");
-                                            $req->bindValue(':id',$id,PDO::PARAM_INT);
-                                            $req->execute();
-                                            while($donne=$req->fetch())
-                                            {
-                                            ?>
+
                                             <th> Nom </th>
-                                            <th> <input type="text" name="nom" value="<?php echo $donne['nom']?>" </th>
+                                            <th> <input type="text" name="nom" value="<?php echo $_SESSION['nom']?>" </th>
                                         </tr>
                                         <tr>
-                                            <th> Producton régis </th>
-                                            <th> <input type="text"name="production_regis" value="<?php echo $donne['production_regis'] ?>"</th>
+                                            <th> Prenom </th>
+                                            <th> <input type="text"name="prenom" value="<?php echo $_SESSION['prenom'] ?>"</th>
                                         </tr>
                                         <tr>
-                                            <th>Production active  </th>
-                                            <th><input type="text" name="production_active" value="<?php echo $donne['production_active']?>" </th>
+                                            <th>Pseudo </th>
+                                            <th><?php echo $_SESSION['pseudo']?> </th>
                                         </tr>
                                         <tr>
-                                            <th> Début du projet</th>
-                                            <th> <input type="text" name= "date_crea" value="<?php echo $donne["date_creation"];?>" </th>
+                                            <th> Mot de passe</th>
+                                            <th> <input type="password" name= "mdp" value="<?php echo $_SESSION['mdp'];?>" </th>
                                         </tr>
                                         <tr>
-                                            <th> Fin du projet</th>
-                                            <th> <input type="text" name="date_fin" value="<?php echo $donne["date_fin"];?>" </th>
+                                            <th>Adresse mail </th>
+                                            <th><input type="text" name="mail" value="<?php echo $_SESSION['mail']?>" </th>
                                         </tr>
                                         <tr>
-                                            <th> Temps du projet</th>
-                                            <th> <input type="text" name="tempstt" value="<?php echo $donne["temps_total"];?>" </th>
+                                            <th>Numéro de téléphone </th>
+                                            <th><input type="text" name="num" value="<?php echo $_SESSION['num']?>" </th>
                                         </tr>
-                                        <?php
-                                        }
-                                        $req->closeCursor();
-                                        ?>
+
                                     </thead>
 
 
 
                                 </table>
-                                <center>  <button type="submit" name="Modifier3" id="Modifier3" class="btn blue">Modifier</button>
+                                <center>  <button type="submit" name="Modifier5" id="Modifier4" class="btn blue">Modifier</button>
                                     <a href="client.php" <button type="submit" name="Retour" id="Retour" class="btn gray">Retour</button></a></center>
                                 </form>
 

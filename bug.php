@@ -28,7 +28,7 @@ License: You must have a valid license purchased only from themeforest(the above
 <!-- BEGIN CONTAINER -->
 <div class="page-container">
     <!-- Menu -->
-    <?php include "menu.html"?>
+    <?php include "menu.php"?>
 
     <div class="page-content-wrapper">
         <!-- BEGIN CONTENT BODY -->
@@ -71,9 +71,7 @@ License: You must have a valid license purchased only from themeforest(the above
 
                         </div>
 
-                        <form>
-                            <INPUT type="button" name="nom" value= "Ajouter un bug">
-                        </form>
+                        <a href="Ajouter_bug.php"><input type="submit" value="Ajouter un bug"></a>
 
                         <div class="portlet-body">
                             <div class="table-scrollable">
@@ -85,34 +83,40 @@ License: You must have a valid license purchased only from themeforest(the above
                                         <th></th>
                                     </tr>
                                     </thead>
-                                    <tr>
-                                        <th> Squellette erp </th>
-                                        <th> Pas le bon css </th>
-                                        <th>
-                                            <form>
-                                                <INPUT type="button" name="nom" value= "Commentaire">
-                                                <INPUT type="button" name="nom" value= "Résolu">
-
-
+                                    <tr></tr>
+                                    <?php
+                                    $req= $bdd->prepare("Select * from taches where Type='Bug' and id_Projet=:pro");
+                                    $req->bindValue(':pro',$_SESSION['id_Projets'],PDO::PARAM_INT);
+                                    $req->execute();
+                                    while($donne= $req->fetch())
+                                    {
+                                        ?>
+                                        <th><?php echo $donne['nom']?></th>
+                                        <th><?php echo $donne['description'];?></th>
+                                    <form action="" method="post">
+                                        <input class="form-control" name="id" id="id" type="hidden" value="<?php echo $donne['id_Tache']?>" />
+                                        <th><button id="Corriger" name="Corriger" class="btn green-sharp btn-large" data-toggle="confirmation" data-placement="top" data-btn-ok-label="Oui" data-btn-ok-icon="icon-like" data-btn-ok-class="btn-success" data-btn-cancel-label="Non!"
+                                                    data-btn-cancel-icon="icon-close" data-btn-cancel-class="btn-danger">Corriger</button>
                                             </form>
                                         </th>
-                                    </tr>
-                                    <tr>
-                                        <th> Maquette erp </th>
-                                        <th> donnée perdu </th>
-                                        <th>
-                                            <form>
-                                                <INPUT type="button" name="nom" value= "Commentaire">
-                                                <INPUT type="button" name="nom" value= "Résolu">
-
-
-                                            </form>
-                                        </th>
-                                    </tr>
+                                        </tr>
+                                    <?php
+                                    }
+                                    ?>
 
 
 
                                 </table>
+                                <?php
+                                if(isset($_POST['Corriger']))
+                                {
+                                    $idtache= $_POST['id'];
+                                    $req= $bdd->prepare("Update taches set Type='' where id_Tache=:tache");
+                                    $req->bindValue(':tache',$idtache,PDO::PARAM_INT);
+                                    $req->execute();
+
+                                }
+                                ?>
                             </div>
                         </div>
                     </div>

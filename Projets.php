@@ -37,7 +37,7 @@ if(isset($_GET['id']))
 <!-- BEGIN CONTAINER -->
 <div class="page-container">
     <!-- Menu -->
-    <?php include "menu.html"?>
+    <?php include "menu.php"?>
 
     <div class="page-content-wrapper">
         <!-- BEGIN CONTENT BODY -->
@@ -53,7 +53,7 @@ if(isset($_GET['id']))
                     <!-- BEGIN SAMPLE TABLE PORTLET-->
                     <div class="portlet light ">
                      <span class="caption-subject font-green bold uppercase"><center>  <?php $req= $bdd->prepare("Select * from projet where id_Projets=:id ");
-                          $req->bindValue(':id',$id_Projets,PDO::PARAM_INT);
+                          $req->bindValue(':id',$_SESSION['id_Projets'],PDO::PARAM_INT);
                           $req->execute();
                           while($donne=$req->fetch())
                           {
@@ -137,7 +137,7 @@ if(isset($_GET['id']))
                         </div>
                         <?php
                         $req=$bdd->prepare("Select count(*)AS nbr2 from taches where id_Projet:projet and etat<>'fini';");
-                            $req->bindValue(':projet',$id_Projets,PDO::PARAM_INT);
+                            $req->bindValue(':projet',$_SESSION['id_Projets'],PDO::PARAM_INT);
                         $req->execute();
                         $val=$req->rowCount();
                         if($val==0)
@@ -173,7 +173,7 @@ if(isset($_GET['id']))
                         <p> Les tâches : </p>
                         <p><?php
                         $req=$bdd->prepare("Select nom from taches where id_Projet=:projet and nom<>''");
-                            $req->bindValue(':projet',$id_Projets,PDO::PARAM_INT);
+                            $req->bindValue(':projet',$_SESSION['id_Projets'],PDO::PARAM_INT);
                             $req->execute();
                             while ($do= $req->fetch())
                             {

@@ -28,7 +28,7 @@ License: You must have a valid license purchased only from themeforest(the above
 <!-- BEGIN CONTAINER -->
 <div class="page-container">
     <!-- Menu -->
-    <?php include "menu.html";
+    <?php include "menu.php";
     if (isset($_GET['id']))
     {
         $id=$_GET['id'];

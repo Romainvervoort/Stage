@@ -29,7 +29,7 @@ License: You must have a valid license purchased only from themeforest(the above
 <!-- BEGIN CONTAINER -->
 <div class="page-container">
     <!-- Menu -->
-    <?php include "menu.html"?>
+    <?php include "menu.php"?>
 
     <div class="page-content-wrapper">
         <!-- BEGIN CONTENT BODY -->
@@ -89,6 +89,10 @@ License: You must have a valid license purchased only from themeforest(the above
                                     </thead>
 
                                 </table>
+
+                               <center><a href="modifier_profil.php">
+                                       <input type="submit" value="Modifier"></a>
+                               </center>
                             </div>
                         </div>
                     </div>

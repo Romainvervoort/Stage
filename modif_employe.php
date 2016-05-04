@@ -1,0 +1,52 @@
+<?php
+include "connexion.php";
+session_start();
+if(isset($_POST['nom']))
+{
+   if(isset($_POST['interim']))
+{
+    $interim="true";
+}
+else
+{
+   $interim="false";
+}
+    if(isset($_POST['actif']))
+    {
+       $actif="true";
+    }
+    else
+    {
+        $actif="false";
+    }
+
+    if(isset($_POST['administrateur']))
+    {
+        $admin="true";
+    }
+    else
+    {
+        $admin="false";
+    }
+    if(isset($_POST['fixe']))
+    {
+        $fixe="true";
+    }
+    else
+    {
+       $fixe="false";
+    }
+    $req= $bdd->prepare("Update utilisateur set Nom=:nom,Prenom=:prenom,mail=:mail,telephone=:tel,mdp=:mdp,administrateur=:admin,interim=:interim,fixe=:fixe,actif=:actif,pseudo=:pseudo where id_Users=:id");
+    $req->bindValue(':nom',$_POST['nom'],PDO::PARAM_STR);
+    $req->bindValue(':prenom',$_POST['prenom'],PDO::PARAM_STR);
+    $req->bindValue(':mail',$_POST['mail'],PDO::PARAM_STR);
+    $req->bindValue(':tel',$_POST['num'],PDO::PARAM_INT);
+    $req->bindValue(':mdp',$_POST['mdp'],PDO::PARAM_STR);
+    $req->bindValue(':admin',$admin,PDO::PARAM_STR);
+    $req->bindValue(':interim',$interim,PDO::PARAM_STR);
+    $req->bindValue(':fixe',$fixe,PDO::PARAM_STR);
+    $req->bindValue(':actif',$actif,PDO::PARAM_STR);
+    $req->bindValue(':pseudo',$_POST['pseudo'],PDO::PARAM_STR);
+    $req->bindValue(':id',$_SESSION['idmodif'],PDO::PARAM_INT);
+    $req->execute();
+}

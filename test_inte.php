@@ -45,6 +45,12 @@ session_start();
         ?>
     </select>
 </datalist>
+<?php
+if(isset($_POST['pro']))
+{
+    echo $_POST['pro'];
+}
+?>
 <script>
     /*  var query=document.querySelector('#Projets option'),
      queryall=document.querySelectorAll('#Projets option');
@@ -66,7 +72,7 @@ session_start();
         });
 
         /* if(list.options[list.selectedIndex].innerHTML == 'test') {
-         $("div#test3").show();
+             $("div#test3").show();
          }
          var str= list.options[list.selectedIndex].innerHTML;
          var x = document.createElement("INPUT");
@@ -117,7 +123,6 @@ if(isset($_POST['pro']))
     ?>
     </select>
 </datalist>
-
 <select id="projets">
 <option>test</option>
     <?php
@@ -136,10 +141,6 @@ if(isset($_POST['pro']))
         ?>
 </select>
 
-<div id="test3" style="display:none">
-    <p>izajdiozadjoizad</p>
-    <p>jzadçzajdçzajd</p>
-</div>
 <p id="test" style="display: none">Hello  2</p>
 <p id="test2" style="display: none">Hello azeazeeaze 2</p>
 <p id="pro"> Coucou</p>
